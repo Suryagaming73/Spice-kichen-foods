@@ -79,7 +79,7 @@ const List = () => {
                 )}
               </div>
               <p className="item-name">{item.name}</p>
-              <p className="category-badge">{item.categories?.name || '—'}</p>
+              <p className="category-badge">{item.category_details?.name || '—'}</p>
               <p className="price">₹{Number(item.price).toFixed(0)}</p>
               <span className={`type-badge ${item.is_veg ? 'veg' : 'non-veg'}`}>
                 {item.is_veg ? <><Leaf size={12} /> Veg</> : '● Non-Veg'}
