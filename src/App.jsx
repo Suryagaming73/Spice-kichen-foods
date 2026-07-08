@@ -1,0 +1,149 @@
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { CartProvider } from './contexts/CartContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import Header from './components/Header/Header'
+import Footer from './components/Footer/Footer'
+import Navbar from './components/Navbar/Navbar'
+import Sidebar from './components/Sidebar/Sidebar'
+
+// Customer Pages
+import Home from './pages/Home/Home'
+import Menu from './pages/Menu/Menu'
+import Cart from './pages/Cart/Cart'
+import Checkout from './pages/Checkout/Checkout'
+import MyOrders from './pages/MyOrders/MyOrders'
+import Profile from './pages/Profile/Profile'
+import Auth from './pages/Auth/Auth'
+
+// Admin Pages
+import Dashboard from './pages/Dashboard/Dashboard'
+import Add from './pages/Add/Add'
+import List from './pages/List/List'
+import Categories from './pages/Categories/Categories'
+import Orders from './pages/Orders/Orders'
+import Settings from './pages/Settings/Settings'
+
+import './App.css'
+
+// Layout for customer pages (Header + Footer)
+function CustomerLayout() {
+  return (
+    <>
+      <Header />
+      <main className="main-content">
+        <Outlet />
+      </main>
+      <Footer />
+    </>
+  )
+}
+
+// Layout for admin pages (Navbar + Sidebar)
+function AdminLayout() {
+  return (
+    <ProtectedRoute adminOnly>
+      <div className="admin-layout">
+        <Navbar />
+        <hr className="admin-hr" />
+        <div className="admin-content">
+          <Sidebar />
+          <div className="admin-page">
+            <Outlet />
+          </div>
+        </div>
+      </div>
+    </ProtectedRoute>
+  )
+}
+
+function RootRoute() {
+  const { isAdmin, loading } = useAuth()
+  
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner" />
+        <p>Loading...</p>
+      </div>
+    )
+  }
+
+  if (isAdmin) {
+    return <Navigate to="/admin/dashboard" replace />
+  }
+
+  return <Home />
+}
+
+function App() {
+  return (
+    <Router>
+      <AuthProvider>
+        <CartProvider>
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: 'rgba(26, 26, 35, 0.95)',
+                color: '#fff',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '12px',
+                backdropFilter: 'blur(10px)',
+                fontSize: '14px',
+                fontFamily: 'Outfit, sans-serif',
+              },
+              success: {
+                iconTheme: { primary: '#22c55e', secondary: '#fff' },
+              },
+              error: {
+                iconTheme: { primary: '#ef4444', secondary: '#fff' },
+              },
+            }}
+          />
+
+          <Routes>
+            {/* Customer Routes */}
+            <Route element={<CustomerLayout />}>
+              <Route path="/" element={<RootRoute />} />
+              <Route path="/menu" element={<Menu />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              } />
+              <Route path="/my-orders" element={
+                <ProtectedRoute>
+                  <MyOrders />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } />
+            </Route>
+
+            {/* Auth Routes (no header/footer) */}
+            <Route path="/auth" element={<Auth />} />
+
+            {/* Admin Routes */}
+            <Route element={<AdminLayout />}>
+              <Route path="/admin/dashboard" element={<Dashboard />} />
+              <Route path="/admin/add" element={<Add />} />
+              <Route path="/admin/categories" element={<Categories />} />
+              <Route path="/admin/list" element={<List />} />
+              <Route path="/admin/orders" element={<Orders />} />
+              <Route path="/admin/settings" element={<Settings />} />
+            </Route>
+          </Routes>
+        </CartProvider>
+      </AuthProvider>
+    </Router>
+  )
+}
+
+export default App
