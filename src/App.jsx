@@ -17,6 +17,13 @@ import MyOrders from './pages/MyOrders/MyOrders'
 import Profile from './pages/Profile/Profile'
 import Auth from './pages/Auth/Auth'
 
+// Static/Legal Pages
+import About from './pages/Static/About'
+import Contact from './pages/Static/Contact'
+import Privacy from './pages/Static/Privacy'
+import Terms from './pages/Static/Terms'
+import Reviews from './pages/Static/Reviews'
+
 // Admin Pages
 import Dashboard from './pages/Dashboard/Dashboard'
 import Add from './pages/Add/Add'
@@ -125,6 +132,11 @@ function App() {
                   <Profile />
                 </ProtectedRoute>
               } />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/reviews" element={<Reviews />} />
             </Route>
 
             {/* Auth Routes (no header/footer) */}

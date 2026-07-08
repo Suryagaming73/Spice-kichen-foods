@@ -21,9 +21,9 @@ export default function Footer() {
               Order now and get it delivered hot to your doorstep!
             </p>
             <div className="social-links">
-              <a href="#" className="social-link" aria-label="Website"><Globe size={18} /></a>
-              <a href="#" className="social-link" aria-label="Reviews"><Heart size={18} /></a>
-              <a href="#" className="social-link" aria-label="Chat"><MessageCircle size={18} /></a>
+              <Link to="/about" className="social-link" aria-label="Website"><Globe size={18} /></Link>
+              <Link to="/reviews" className="social-link" aria-label="Reviews"><Heart size={18} /></Link>
+              <Link to="/contact" className="social-link" aria-label="Chat"><MessageCircle size={18} /></Link>
             </div>
           </div>
 
@@ -60,6 +60,10 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <p>© {new Date().getFullYear()} Spice Kitchen. All rights reserved.</p>
+          <div className="legal-links">
+            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/terms">Terms of Service</Link>
+          </div>
           <p>Made with ❤️ in India</p>
         </div>
       </div>
