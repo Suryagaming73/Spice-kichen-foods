@@ -46,7 +46,7 @@ export default function Checkout() {
       }))
 
       // Use saved address if available
-      if (profile.saved_addresses && profile.saved_addresses.length > 0) {
+      if (profile && profile.saved_addresses && profile.saved_addresses.length > 0) {
         const saved = profile.saved_addresses[0]
         setAddress(prev => ({
           ...prev,
@@ -60,14 +60,15 @@ export default function Checkout() {
         }))
       }
     }
-  }, [profile])
+  }, [profile, user])
 
-  // Redirect if cart empty
+  // Redirect if cart empty on initial load
   useEffect(() => {
     if (cartItems.length === 0 && !orderPlaced) {
-      navigate('/cart')
+      navigate('/cart', { replace: true })
     }
-  }, [cartItems, navigate, orderPlaced])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function fetchGPSLocation() {
     setFetchingLocation(true)
@@ -188,10 +189,10 @@ export default function Checkout() {
           <p>Your order #{orderId} has been confirmed</p>
           <p className="success-note">You will receive updates on your order status</p>
           <div className="success-actions">
-            <button onClick={() => navigate('/my-orders')} className="track-btn">
+            <button onClick={() => navigate('/my-orders', { replace: true })} className="track-btn">
               Track Order
             </button>
-            <button onClick={() => navigate('/menu')} className="continue-btn">
+            <button onClick={() => navigate('/menu', { replace: true })} className="continue-btn">
               Continue Ordering
             </button>
           </div>
