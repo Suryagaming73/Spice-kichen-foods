@@ -32,15 +32,17 @@ export default function Checkout() {
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [orderId, setOrderId] = useState(null)
 
-  // Pre-fill from profile
+  // Pre-fill from profile or user
   useEffect(() => {
-    if (profile) {
-      const names = (profile.full_name || '').split(' ')
+    if (profile || user) {
+      const fullName = (profile && profile.full_name) || (user && user.displayName) || ''
+      const names = fullName.split(' ')
+      
       setAddress(prev => ({
         ...prev,
-        firstName: names[0] || '',
-        lastName: names.slice(1).join(' ') || '',
-        phone: profile.phone || '',
+        firstName: prev.firstName || names[0] || '',
+        lastName: prev.lastName || names.slice(1).join(' ') || '',
+        phone: (profile && profile.phone) || prev.phone || '',
       }))
 
       // Use saved address if available

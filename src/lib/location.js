@@ -56,12 +56,7 @@ export function getCurrentLocation() {
 export async function reverseGeocode(lat, lng) {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=en`,
-      {
-        headers: {
-          'User-Agent': 'SpiceKitchenFoodDelivery/1.0',
-        },
-      }
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
     )
 
     if (!response.ok) {
@@ -74,23 +69,21 @@ export async function reverseGeocode(lat, lng) {
       throw new Error(data.error)
     }
 
-    const addr = data.address || {}
-
     return {
-      fullAddress: data.display_name || '',
-      street: [addr.road, addr.house_number].filter(Boolean).join(', ') || addr.neighbourhood || '',
-      area: addr.suburb || addr.neighbourhood || addr.hamlet || '',
-      city: addr.city || addr.town || addr.village || addr.county || '',
-      state: addr.state || '',
-      pincode: addr.postcode || '',
-      country: addr.country || 'India',
+      fullAddress: data.locality || data.city || data.principalSubdivision || '',
+      street: '', // BigDataCloud free tier doesn't always provide street
+      area: data.locality || '',
+      city: data.city || data.locality || '',
+      state: data.principalSubdivision || '',
+      pincode: data.postcode || '',
+      country: data.countryName || 'India',
       lat,
       lng,
     }
   } catch (error) {
-      console.error('Reverse geocoding error:', error)
+    console.error('Reverse geocoding error:', error)
     throw error
-    }
+  }
 }
 
 /**
