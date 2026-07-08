@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Truck } from 'lucide-react'
 import { useCart } from '../../contexts/CartContext'
 import { useAuth } from '../../contexts/AuthContext'
@@ -7,20 +8,16 @@ import './Cart.css'
 export default function Cart() {
   const { cartItems, incrementQuantity, decrementQuantity, removeFromCart, subtotal, deliveryFee, total, totalItems, FREE_DELIVERY_ABOVE } = useCart()
   const { user } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      navigate('/', { replace: true })
+    }
+  }, [cartItems.length, navigate])
 
   if (cartItems.length === 0) {
-    return (
-      <div className="cart-page">
-        <div className="cart-empty">
-          <ShoppingBag size={64} strokeWidth={1.5} />
-          <h2>Your cart is empty</h2>
-          <p>Looks like you haven't added any items yet</p>
-          <Link to="/menu" className="browse-menu-btn">
-            Browse Menu <ArrowRight size={16} />
-          </Link>
-        </div>
-      </div>
-    )
+    return null // Will redirect
   }
 
   return (
