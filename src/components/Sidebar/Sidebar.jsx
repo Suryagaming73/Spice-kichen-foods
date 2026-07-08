@@ -1,15 +1,18 @@
 import { NavLink } from 'react-router-dom'
 import { PlusCircle, List, Package, LayoutDashboard, Settings, LogOut, LayoutGrid, Tag, Gift } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
+import { useCart } from '../../contexts/CartContext'
 import { useNavigate } from 'react-router-dom'
 import './Sidebar.css'
 
 const Sidebar = () => {
   const { signOut } = useAuth()
+  const { clearCart } = useCart()
   const navigate = useNavigate()
 
   async function handleSignOut() {
     await signOut()
+    clearCart()
     navigate('/')
   }
 

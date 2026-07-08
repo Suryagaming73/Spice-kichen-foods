@@ -7,7 +7,7 @@ import './Header.css'
 
 export default function Header() {
   const { user, displayName, avatarUrl, signOut, isAdmin } = useAuth()
-  const { totalItems } = useCart()
+  const { totalItems, clearCart } = useCart()
   const [menuOpen, setMenuOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -44,6 +44,7 @@ export default function Header() {
 
   async function handleSignOut() {
     await signOut()
+    clearCart()
     navigate('/')
   }
 

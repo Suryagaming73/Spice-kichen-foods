@@ -2,11 +2,13 @@ import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Camera, Save, MapPin, Trash2, Plus, LogOut, Mail, Phone, User } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
+import { useCart } from '../../contexts/CartContext'
 import toast from 'react-hot-toast'
 import './Profile.css'
 
 export default function Profile() {
   const { user, profile, displayName, avatarUrl, updateProfile, uploadAvatar, signOut } = useAuth()
+  const { clearCart } = useCart()
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
 
@@ -103,6 +105,7 @@ export default function Profile() {
 
   async function handleSignOut() {
     await signOut()
+    clearCart()
     navigate('/')
   }
 
