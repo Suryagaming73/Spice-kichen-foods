@@ -19,14 +19,19 @@ const Orders = () => {
     }
   }
 
-  const statusHandler = async (orderId, newStatus) => {
+  const statusHandler = async (orderId, updates) => {
+    // Auto-mark as paid if status is changed to Delivered
+    if (updates.status === 'Delivered') {
+      updates.payment_status = true
+    }
+
     try {
-      await api.patch(`orders/${orderId}/`, { status: newStatus })
+      await api.patch(`orders/${orderId}/`, updates)
 
       setOrders(prev =>
-        prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o)
+        prev.map(o => o.id === orderId ? { ...o, ...updates } : o)
       )
-      toast.success(`Order #${orderId} → ${newStatus}`)
+      toast.success(`Order #${orderId} updated`)
     } catch (error) {
       toast.error('Error updating order')
     }
@@ -108,7 +113,12 @@ const Orders = () => {
                     </div>
                     <div className="order-payment">
                       <strong>Payment:</strong>
-                      <span className={order.payment_status ? 'paid' : 'unpaid'}>
+                      <span 
+                        className={`payment-badge ${order.payment_status ? 'paid' : 'unpaid'}`}
+                        onClick={() => statusHandler(order.id, { payment_status: !order.payment_status })}
+                        style={{ cursor: 'pointer' }}
+                        title="Click to toggle payment status"
+                      >
                         {order.payment_status ? '✅ Paid' : '⏳ Pending'}
                       </span>
                     </div>
@@ -120,7 +130,7 @@ const Orders = () => {
                 </div>
                 <div className="order-status-select">
                   <select
-                    onChange={(e) => statusHandler(order.id, e.target.value)}
+                    onChange={(e) => statusHandler(order.id, { status: e.target.value })}
                     value={order.status}
                     className={`status-dropdown status-${order.status.toLowerCase().replace(/\s/g, '-')}`}
                   >

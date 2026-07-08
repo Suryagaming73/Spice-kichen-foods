@@ -110,6 +110,18 @@
 .paid { color: #22c55e; font-weight: 600; font-size: 13px; }
 .unpaid { color: #FFB800; font-weight: 600; font-size: 13px; }
 
+.payment-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  user-select: none;
+}
+
+.payment-badge:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
 .order-method span {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.5);
