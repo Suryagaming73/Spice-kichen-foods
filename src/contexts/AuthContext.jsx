@@ -92,10 +92,18 @@ export function AuthProvider({ children }) {
     return res.data
   }
 
-  const signInWithGoogle = async () => {
-    // Requires a custom endpoint in Django to handle the Google token
-    // For now we'll throw an error
-    throw new Error("Google Sign in is not implemented in the Django backend yet.")
+  const signInWithGoogle = async (credential) => {
+    try {
+      const { data } = await api.post('auth/google/', { token: credential })
+      localStorage.setItem('access_token', data.access)
+      localStorage.setItem('refresh_token', data.refresh)
+      
+      const { data: profileData } = await api.get('users/me/')
+      setUser(profileData)
+    } catch (error) {
+      console.error('Google Sign In Error:', error)
+      throw error
+    }
   }
 
   const value = {

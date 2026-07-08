@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Mail, Lock, User, Phone, Eye, EyeOff, ChefHat } from 'lucide-react'
+import { useGoogleLogin } from '@react-oauth/google'
 import { useAuth } from '../../contexts/AuthContext'
 import toast from 'react-hot-toast'
 import './Auth.css'
@@ -88,13 +89,22 @@ export default function Auth() {
     }
   }
 
-  async function handleGoogleSignIn() {
-    try {
-      await signInWithGoogle()
-    } catch (error) {
-      toast.error('Google sign-in failed. Please try again.')
+  const handleGoogleSignIn = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        if (tokenResponse.access_token) {
+          await signInWithGoogle(tokenResponse.access_token)
+          justAuthed.current = true
+          toast.success('Google Login Successful!')
+        }
+      } catch (err) {
+        toast.error('Google sign-in failed on our server. Please try again.')
+      }
+    },
+    onError: () => {
+      toast.error('Google login was cancelled or failed.')
     }
-  }
+  })
 
   return (
     <div className="auth-page">
