@@ -92,3 +92,35 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+.file-input {
+  background-color: transparent !important;
+  border: 1px dashed var(--color-border) !important;
+  padding: 20px !important;
+  cursor: pointer;
+}
+
+.file-input:hover {
+  border-color: var(--color-primary) !important;
+}
+
+.file-input::file-selector-button {
+  background-color: var(--color-bg-tertiary, #2d3748);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 16px;
+  transition: all 0.2s;
+}
+
+.file-input::file-selector-button:hover {
+  background-color: var(--color-primary);
+}
+
+.file-name {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #4ade80;
+}

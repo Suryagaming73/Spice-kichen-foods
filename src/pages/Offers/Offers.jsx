@@ -7,6 +7,7 @@ import './Offers.css'
 export default function Offers() {
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
+  const [image, setImage] = useState(null)
   const [loading, setLoading] = useState(false)
 
   async function handleSendOffer(e) {
@@ -21,10 +22,20 @@ export default function Offers() {
 
     setLoading(true)
     try {
-      const { data } = await api.post('users/send_offer/', { subject, message })
+      const formData = new FormData()
+      formData.append('subject', subject)
+      formData.append('message', message)
+      if (image) {
+        formData.append('image', image)
+      }
+
+      const { data } = await api.post('users/send_offer/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
       toast.success(data.message || 'Offers sent successfully!')
       setSubject('')
       setMessage('')
+      setImage(null)
     } catch (error) {
       console.error(error)
       toast.error('Failed to send offers. Please try again.')
@@ -68,6 +79,21 @@ export default function Offers() {
                 onChange={(e) => setMessage(e.target.value)}
                 required
               />
+            </div>
+
+            <div className="form-group">
+              <label>Offer Poster / Image (Optional)</label>
+              <input 
+                type="file" 
+                accept="image/*"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setImage(e.target.files[0])
+                  }
+                }}
+                className="file-input"
+              />
+              {image && <p className="file-name">Selected: {image.name}</p>}
             </div>
 
             <button type="submit" className="send-offer-btn" disabled={loading}>
