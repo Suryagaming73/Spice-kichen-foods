@@ -19,14 +19,14 @@ const Navbar = () => {
           <span className="admin-badge">Admin</span>
         </div>
       </div>
-      <div className="navbar-profile">
+      <Link to="/profile" className="navbar-profile" title="Edit Profile">
         {avatarUrl ? (
           <img src={avatarUrl} alt={displayName} className="admin-avatar" referrerPolicy="no-referrer" />
         ) : (
           <div className="profile-circle">{displayName.charAt(0).toUpperCase()}</div>
         )}
         <span className="profile-name">{displayName}</span>
-      </div>
+      </Link>
     </div>
   )
 }

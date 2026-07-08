@@ -166,7 +166,7 @@ export default function Menu() {
             className={`cat-tab ${activeCategory === cat.name ? 'active' : ''}`}
             onClick={() => handleCategoryClick(cat.name)}
           >
-            {cat.icon} {cat.name}
+            {cat.name}
           </button>
         ))}
       </div>

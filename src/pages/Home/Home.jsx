@@ -181,7 +181,7 @@ export default function Home() {
               to={`/menu?category=${encodeURIComponent(cat.name)}`}
               className="category-card"
             >
-              <span className="category-icon">{cat.icon}</span>
+
               <span className="category-name">{cat.name}</span>
             </Link>
           ))}

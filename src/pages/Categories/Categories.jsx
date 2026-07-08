@@ -10,8 +10,7 @@ export default function Categories() {
   const [adding, setAdding] = useState(false)
   
   const [form, setForm] = useState({
-    name: '',
-    icon: '🍽️'
+    name: ''
   })
 
   useEffect(() => {
@@ -36,17 +35,17 @@ export default function Categories() {
 
   async function handleAddCategory(e) {
     e.preventDefault()
-    if (!form.name.trim() || !form.icon.trim()) {
-      toast.error('Name and Icon are required')
+    if (!form.name.trim()) {
+      toast.error('Name is required')
       return
     }
 
     setAdding(true)
     try {
-      await api.post('categories/', { name: form.name.trim(), icon: form.icon.trim() })
+      await api.post('categories/', { name: form.name.trim() })
 
       toast.success('Category added successfully')
-      setForm({ name: '', icon: '🍽️' })
+      setForm({ name: '' })
       fetchCategories()
     } catch (error) {
       toast.error(error.message || 'Failed to add category')
@@ -101,18 +100,6 @@ export default function Categories() {
               />
             </div>
             
-            <div className="form-group icon-group">
-              <label>Icon (Emoji)</label>
-              <input
-                type="text"
-                name="icon"
-                placeholder="e.g. 🍚"
-                value={form.icon}
-                onChange={handleChange}
-                maxLength={5}
-                required
-              />
-            </div>
 
             <button type="submit" className="add-btn" disabled={adding}>
               {adding ? 'Adding...' : <><Plus size={18} /> Add Category</>}
@@ -135,7 +122,6 @@ export default function Categories() {
               {categories.map((cat) => (
                 <div key={cat.id} className="category-item">
                   <div className="category-info">
-                    <span className="category-icon">{cat.icon}</span>
                     <span className="category-name">{cat.name}</span>
                   </div>
                   <button 

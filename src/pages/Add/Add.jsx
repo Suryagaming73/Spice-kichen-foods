@@ -138,7 +138,7 @@ const Add = () => {
             <select onChange={onChangeHandler} value={data.category_id} name="category_id">
               {categories.map(cat => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.icon} {cat.name}
+                  {cat.name}
                 </option>
               ))}
             </select>
