@@ -637,18 +637,19 @@
 }
 
 .testimonial-form button {
-  background-color: var(--color-primary, #ff4757);
+  background: linear-gradient(135deg, #FF6B35, #FF8C42);
   color: white;
   border: none;
   border-radius: 8px;
   padding: 12px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .testimonial-form button:hover:not(:disabled) {
-  background-color: #ff3344;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 107, 53, 0.35);
 }
 
 .testimonial-form button:disabled {
