@@ -58,6 +58,14 @@ export default function Auth() {
 
     setLoading(true)
     try {
+      if (isAdminLogin) {
+        if (form.email !== 'admin@spicekitchen.com' || form.password !== 'admin123') {
+          toast.error('Invalid admin credentials. Please use the correct admin email and password.')
+          setLoading(false)
+          return
+        }
+      }
+
       if (isLogin) {
         await signIn(form.email, form.password)
         justAuthed.current = true
