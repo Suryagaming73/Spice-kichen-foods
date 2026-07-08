@@ -14,6 +14,7 @@
   margin: 0 auto;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 24px;
   height: 70px;
 }
@@ -383,8 +384,16 @@
   .header {
     padding: 0 16px;
   }
-
-  .logo-text {
-    display: none;
+  
+  /* Keep logo text visible but make it slightly smaller to fit better */
+  .logo-name {
+    font-size: 16px;
+  }
+  .logo-accent {
+    font-size: 11px;
+  }
+  
+  .header-actions {
+    gap: 4px;
   }
 }
