@@ -22,7 +22,6 @@ export default function Footer() {
             </p>
             <div className="social-links">
               <Link to="/about" className="social-link" aria-label="Website"><Globe size={18} /></Link>
-              <Link to="/reviews" className="social-link" aria-label="Reviews"><Heart size={18} /></Link>
               <Link to="/contact" className="social-link" aria-label="Chat"><MessageCircle size={18} /></Link>
             </div>
           </div>
