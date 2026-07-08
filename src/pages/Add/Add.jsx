@@ -59,9 +59,11 @@ const Add = () => {
       formData.append('name', data.name)
       formData.append('description', data.description)
       formData.append('price', data.price)
-      formData.append('category', data.category_id)
       formData.append('is_veg', data.is_veg)
       formData.append('is_available', data.is_available)
+      if (data.category_id) {
+        formData.append('category', data.category_id)
+      }
       formData.append('image_url', image) // DRF matches the field name 'image_url' for the file
 
       await api.post('food-items/', formData, {

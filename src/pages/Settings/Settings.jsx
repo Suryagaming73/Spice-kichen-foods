@@ -40,7 +40,19 @@ export default function Settings() {
   async function handleSave() {
     setSaving(true)
     try {
-      await api.patch(`hotel-settings/${settings.id}/`, settings)
+      const payload = { ...settings }
+      delete payload.logo_url // Cannot be patched as a string URL
+
+      // Convert empty numeric fields to null where applicable
+      if (payload.lat === '') payload.lat = null
+      if (payload.lng === '') payload.lng = null
+      if (payload.delivery_radius_km === '') payload.delivery_radius_km = 0
+      if (payload.delivery_fee === '') payload.delivery_fee = 0
+      if (payload.min_order_amount === '') payload.min_order_amount = 0
+      if (payload.free_delivery_above === '') payload.free_delivery_above = 0
+      if (payload.gst_percentage === '') payload.gst_percentage = 0
+
+      await api.patch(`hotel-settings/${settings.id}/`, payload)
       toast.success('Settings saved!')
     } catch (error) {
       toast.error('Failed to save settings')
