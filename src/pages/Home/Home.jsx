@@ -276,6 +276,13 @@ export default function Home() {
                 <p>No testimonials yet. Be the first to share your experience!</p>
               </div>
             )}
+            {reviews.length > 0 && (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', marginTop: '20px' }}>
+                <Link to="/reviews" className="login-btn-small" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                  View All Reviews
+                </Link>
+              </div>
+            )}
           </div>
 
           <div className="review-form-container">
