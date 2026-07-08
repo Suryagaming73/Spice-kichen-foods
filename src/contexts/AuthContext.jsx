@@ -108,6 +108,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
+    profile: user?.profile,
     loading,
     signIn,
     signUp,
