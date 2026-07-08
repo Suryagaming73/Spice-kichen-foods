@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Trash2, Eye, EyeOff, Leaf } from 'lucide-react'
+import { Trash2, Eye, EyeOff, Leaf, Edit2 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import api from '../../lib/api'
 import toast from 'react-hot-toast'
 import './List.css'
@@ -91,13 +92,23 @@ const List = () => {
               >
                 {item.is_available ? <><Eye size={14} /> Active</> : <><EyeOff size={14} /> Hidden</>}
               </button>
-              <button
-                onClick={() => removeFood(item.id)}
-                className="delete-btn"
-                title="Delete item"
-              >
-                <Trash2 size={16} />
-              </button>
+              <div className="action-buttons" style={{ display: 'flex', gap: '10px' }}>
+                <Link
+                  to={`/admin/edit/${item.id}`}
+                  className="edit-btn"
+                  title="Edit item"
+                  style={{ background: 'none', border: 'none', color: '#6366f1', cursor: 'pointer', padding: '5px' }}
+                >
+                  <Edit2 size={16} />
+                </Link>
+                <button
+                  onClick={() => removeFood(item.id)}
+                  className="delete-btn"
+                  title="Delete item"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             </div>
           ))
         )}

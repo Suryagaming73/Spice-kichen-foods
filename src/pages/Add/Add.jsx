@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Upload, Leaf } from 'lucide-react'
 import api from '../../lib/api'
 import toast from 'react-hot-toast'
 import './Add.css'
 
 const Add = () => {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const isEditing = !!id
   const [image, setImage] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
   const [categories, setCategories] = useState([])
@@ -19,14 +23,34 @@ const Add = () => {
   })
 
   useEffect(() => {
-    fetchCategories()
-  }, [])
+    fetchCategoriesAndItem()
+  }, [id])
 
-  async function fetchCategories() {
-    const { data: cats } = await api.get('categories/')
-    setCategories(cats || [])
-    if (cats && cats.length > 0) {
-      setData(prev => ({ ...prev, category_id: cats[0].id }))
+  async function fetchCategoriesAndItem() {
+    try {
+      const { data: cats } = await api.get('categories/')
+      setCategories(cats || [])
+      
+      if (id) {
+        // Fetch item for editing
+        const { data: item } = await api.get(`food-items/${id}/`)
+        setData({
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          category_id: item.category || (cats && cats.length > 0 ? cats[0].id : ''),
+          is_veg: item.is_veg,
+          is_available: item.is_available,
+        })
+        if (item.image_url) {
+          setImagePreview(item.image_url)
+        }
+      } else if (cats && cats.length > 0) {
+        setData(prev => ({ ...prev, category_id: cats[0].id }))
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      toast.error('Failed to load data')
     }
   }
 
@@ -48,7 +72,7 @@ const Add = () => {
 
   async function onSubmitHandler(e) {
     e.preventDefault()
-    if (!image) {
+    if (!image && !isEditing) {
       toast.error('Please select an image')
       return
     }
@@ -64,26 +88,35 @@ const Add = () => {
       if (data.category_id) {
         formData.append('category', data.category_id)
       }
-      formData.append('image_url', image) // DRF matches the field name 'image_url' for the file
+      if (image) {
+        formData.append('image_url', image)
+      }
 
-      await api.post('food-items/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
-
-      toast.success('Food item added successfully!')
-      setData({
-        name: '',
-        description: '',
-        price: '',
-        category_id: categories[0]?.id || '',
-        is_veg: true,
-        is_available: true,
-      })
-      setImage(null)
-      setImagePreview(null)
+      if (isEditing) {
+        await api.patch(`food-items/${id}/`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
+        toast.success('Food item updated successfully!')
+        navigate('/admin/list')
+      } else {
+        await api.post('food-items/', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
+        toast.success('Food item added successfully!')
+        setData({
+          name: '',
+          description: '',
+          price: '',
+          category_id: categories[0]?.id || '',
+          is_veg: true,
+          is_available: true,
+        })
+        setImage(null)
+        setImagePreview(null)
+      }
     } catch (error) {
-      console.error('Error adding food item:', error)
-      toast.error(error.message || 'Error adding food item')
+      console.error('Error saving food item:', error)
+      toast.error(error.message || 'Error saving food item')
     } finally {
       setLoading(false)
     }
@@ -91,7 +124,7 @@ const Add = () => {
 
   return (
     <div className="add">
-      <h2 className="page-title">Add New Food Item</h2>
+      <h2 className="page-title">{isEditing ? 'Edit Food Item' : 'Add New Food Item'}</h2>
       <form className="add-form" onSubmit={onSubmitHandler}>
         <div className="form-group upload-img">
           <p>Upload Image</p>
@@ -173,7 +206,7 @@ const Add = () => {
         </div>
 
         <button type="submit" className="add-btn" disabled={loading}>
-          {loading ? <span className="btn-spinner" /> : 'ADD ITEM'}
+          {loading ? (isEditing ? 'Saving...' : 'Adding...') : (isEditing ? 'Save Changes' : 'ADD')}
         </button>
       </form>
     </div>
