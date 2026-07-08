@@ -455,22 +455,34 @@
 }
 
 .testimonials-container {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
   margin-top: 30px;
 }
 
-@media (max-width: 900px) {
-  .testimonials-container {
-    grid-template-columns: 1fr;
-  }
+.reviews-marquee-wrapper {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 10px 0;
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
 }
 
-.reviews-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+.reviews-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+
+.reviews-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .review-card {
@@ -481,6 +493,9 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 350px;
+  flex-shrink: 0;
+  margin: 0 15px;
 }
 
 .review-header {
@@ -565,9 +580,9 @@
   border: 1px solid rgba(255, 107, 53, 0.2);
   border-radius: 12px;
   padding: 24px;
-  height: fit-content;
-  position: sticky;
-  top: 100px;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .review-form-container h3 {
