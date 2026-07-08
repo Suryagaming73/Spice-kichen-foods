@@ -32,6 +32,11 @@ export default function Auth() {
   }, [isAdminLogin])
 
   function handleChange(e) {
+    if (e.target.name === 'phone') {
+      const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+      setForm({ ...form, phone: value });
+      return;
+    }
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
@@ -196,9 +201,12 @@ export default function Auth() {
                 <input
                   type="tel"
                   name="phone"
-                  placeholder="Phone number (optional)"
+                  placeholder="Mobile number (10 digits)"
                   value={form.phone}
                   onChange={handleChange}
+                  pattern="[0-9]{10}"
+                  maxLength="10"
+                  minLength="10"
                 />
               </div>
             </>

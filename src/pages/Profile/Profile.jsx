@@ -25,6 +25,11 @@ export default function Profile() {
   })
 
   function handleChange(e) {
+    if (e.target.name === 'phone') {
+      const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+      setForm({ ...form, phone: value });
+      return;
+    }
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
@@ -172,7 +177,7 @@ export default function Profile() {
               <div className="info-field">
                 <label><Phone size={14} /> Phone</label>
                 {editing ? (
-                  <input name="phone" value={form.phone} onChange={handleChange} placeholder="+91 98765 43210" />
+                  <input name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="10-digit mobile number" pattern="[0-9]{10}" maxLength="10" minLength="10" />
                 ) : (
                   <p>{profile?.phone || '—'}</p>
                 )}
