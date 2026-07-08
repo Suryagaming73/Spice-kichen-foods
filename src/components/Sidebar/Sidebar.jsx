@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { PlusCircle, List, Package, LayoutDashboard, Settings, LogOut, LayoutGrid } from 'lucide-react'
+import { PlusCircle, List, Package, LayoutDashboard, Settings, LogOut, LayoutGrid, Tag, Gift } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import './Sidebar.css'
@@ -39,6 +39,11 @@ const Sidebar = () => {
         <NavLink to="/admin/orders" className="sidebar-option">
           <div className="option-icon"><Package size={20} /></div>
           <p>Orders</p>
+        </NavLink>
+
+        <NavLink to="/admin/offers" className="sidebar-option">
+          <div className="option-icon"><Gift size={20} /></div>
+          <p>Offers</p>
         </NavLink>
 
         <NavLink to="/admin/settings" className="sidebar-option">

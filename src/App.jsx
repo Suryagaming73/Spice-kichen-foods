@@ -31,6 +31,7 @@ import List from './pages/List/List'
 import Categories from './pages/Categories/Categories'
 import Orders from './pages/Orders/Orders'
 import Settings from './pages/Settings/Settings'
+import Offers from './pages/Offers/Offers'
 
 import './App.css'
 
@@ -150,6 +151,7 @@ function App() {
               <Route path="/admin/list" element={<List />} />
               <Route path="/admin/orders" element={<Orders />} />
               <Route path="/admin/settings" element={<Settings />} />
+              <Route path="/admin/offers" element={<Offers />} />
             </Route>
           </Routes>
         </CartProvider>

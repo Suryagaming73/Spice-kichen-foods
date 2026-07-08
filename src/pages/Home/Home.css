@@ -448,3 +448,210 @@
   .hero h1 { font-size: 26px; }
   .hero { min-height: 420px; }
 }
+
+/* Testimonials Section */
+.testimonials-section {
+  padding: 40px 0;
+}
+
+.testimonials-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+@media (max-width: 900px) {
+  .testimonials-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.reviews-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.review-card {
+  background-color: var(--color-bg-secondary, #1a1a23);
+  border: 1px solid var(--color-border, #2d3748);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reviewer-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--color-primary, #ff4757), #ff7e5f);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.reviewer-info h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #fff;
+}
+
+.review-date {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.review-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.review-food-item {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  align-self: flex-start;
+}
+
+.review-food-item span {
+  color: var(--color-primary, #ff4757);
+}
+
+.review-comment {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #d1d5db;
+  margin: 0;
+}
+
+.empty-reviews {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.empty-reviews svg {
+  margin-bottom: 10px;
+  opacity: 0.5;
+}
+
+.review-form-container {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+}
+
+.review-form-container h3 {
+  margin-bottom: 20px;
+  color: #fff;
+  font-size: 18px;
+}
+
+.login-prompt {
+  text-align: center;
+  padding: 20px 0;
+  color: rgba(255,255,255,0.6);
+}
+
+.login-btn-small {
+  display: inline-block;
+  background-color: var(--color-primary, #ff4757);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.testimonial-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rating-select {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+}
+
+.stars-input {
+  display: flex;
+  gap: 4px;
+}
+
+.star-clickable {
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.star-clickable:hover {
+  transform: scale(1.1);
+}
+
+.testimonial-form textarea {
+  width: 100%;
+  background-color: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 12px;
+  color: white;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.testimonial-form textarea:focus {
+  outline: none;
+  border-color: var(--color-primary, #ff4757);
+}
+
+.testimonial-form button {
+  background-color: var(--color-primary, #ff4757);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.testimonial-form button:hover:not(:disabled) {
+  background-color: #ff3344;
+}
+
+.testimonial-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

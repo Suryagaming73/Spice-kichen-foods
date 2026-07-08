@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Search, ArrowRight, Star, Clock, Truck, ShieldCheck, ChefHat } from 'lucide-react'
+import { Search, ArrowRight, Star, Clock, Truck, ShieldCheck, ChefHat, MessageSquare } from 'lucide-react'
 import api from '../../lib/api'
+import { useAuth } from '../../contexts/AuthContext'
+import toast from 'react-hot-toast'
 import FoodCard from '../../components/FoodCard/FoodCard'
 import './Home.css'
 
 export default function Home() {
   const [categories, setCategories] = useState([])
   const [popularItems, setPopularItems] = useState([])
+  const [reviews, setReviews] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' })
+  const [submittingReview, setSubmittingReview] = useState(false)
   const navigate = useNavigate()
+  
+  const { user } = useAuth()
 
   useEffect(() => {
     fetchData()
@@ -18,15 +25,16 @@ export default function Home() {
 
   async function fetchData() {
     try {
-      const [catRes, foodRes] = await Promise.all([
+      const [catRes, foodRes, reviewRes] = await Promise.all([
         api.get('categories/'),
-        api.get('food-items/')
+        api.get('food-items/'),
+        api.get('reviews/')
       ])
 
       setCategories(catRes.data || [])
-      // The API returns all items ordered by rating descending, just slice the top 8 and filter available
       const availableItems = foodRes.data?.filter(item => item.is_available) || []
       setPopularItems(availableItems.slice(0, 8))
+      setReviews(reviewRes.data || [])
     } catch (error) {
       console.error('Error loading home data:', error)
     } finally {
@@ -38,6 +46,35 @@ export default function Home() {
     e.preventDefault()
     if (searchQuery.trim()) {
       navigate(`/menu?search=${encodeURIComponent(searchQuery.trim())}`)
+    }
+  }
+
+  async function submitReview(e) {
+    e.preventDefault()
+    if (!user) {
+      toast.error('Please login to submit a review')
+      navigate('/auth')
+      return
+    }
+    if (!reviewForm.comment.trim()) {
+      toast.error('Please write a review comment')
+      return
+    }
+
+    setSubmittingReview(true)
+    try {
+      const { data } = await api.post('reviews/', {
+        rating: reviewForm.rating,
+        comment: reviewForm.comment,
+        // food_item is omitted for general website review
+      })
+      toast.success('Thank you for your review!')
+      setReviews(prev => [data, ...prev])
+      setReviewForm({ rating: 5, comment: '' })
+    } catch (error) {
+      toast.error('Failed to submit review')
+    } finally {
+      setSubmittingReview(false)
     }
   }
 
@@ -187,6 +224,98 @@ export default function Home() {
             <p>🍽️ Menu items coming soon! Check back later.</p>
           </div>
         )}
+      </section>
+
+      {/* Testimonials */}
+      <section className="section testimonials-section">
+        <div className="section-header">
+          <div>
+            <h2>Customer Testimonials</h2>
+            <p className="section-subtitle">What our customers say about us</p>
+          </div>
+        </div>
+
+        <div className="testimonials-container">
+          <div className="reviews-list">
+            {reviews.slice(0, 6).map((review) => (
+              <div key={review.id} className="review-card">
+                <div className="review-header">
+                  <div className="reviewer-info">
+                    <div className="reviewer-avatar">
+                      {review.user_name ? review.user_name[0].toUpperCase() : 'U'}
+                    </div>
+                    <div>
+                      <h4>{review.user_name || 'Anonymous User'}</h4>
+                      <span className="review-date">
+                        {new Date(review.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="review-stars">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star 
+                        key={i} 
+                        size={16} 
+                        fill={i < review.rating ? "var(--color-primary)" : "none"} 
+                        color={i < review.rating ? "var(--color-primary)" : "#4a5568"} 
+                      />
+                    ))}
+                  </div>
+                </div>
+                {review.food_item && (
+                  <div className="review-food-item">
+                    Ordered: <span>Item #{review.food_item}</span>
+                  </div>
+                )}
+                <p className="review-comment">{review.comment}</p>
+              </div>
+            ))}
+            {reviews.length === 0 && (
+              <div className="empty-reviews">
+                <MessageSquare size={32} />
+                <p>No testimonials yet. Be the first to share your experience!</p>
+              </div>
+            )}
+          </div>
+
+          <div className="review-form-container">
+            <h3>Write a Testimonial</h3>
+            {!user ? (
+              <div className="login-prompt">
+                <p>Please login to share your experience.</p>
+                <Link to="/auth" className="login-btn-small">Login</Link>
+              </div>
+            ) : (
+              <form onSubmit={submitReview} className="testimonial-form">
+                <div className="rating-select">
+                  <label>Rating:</label>
+                  <div className="stars-input">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star 
+                        key={i} 
+                        size={24} 
+                        fill={i < reviewForm.rating ? "var(--color-primary)" : "none"}
+                        color={i < reviewForm.rating ? "var(--color-primary)" : "#4a5568"}
+                        className="star-clickable"
+                        onClick={() => setReviewForm({...reviewForm, rating: i + 1})}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <textarea 
+                  placeholder="Tell us about your experience..." 
+                  value={reviewForm.comment}
+                  onChange={(e) => setReviewForm({...reviewForm, comment: e.target.value})}
+                  rows={4}
+                  required
+                />
+                <button type="submit" disabled={submittingReview}>
+                  {submittingReview ? 'Submitting...' : 'Submit Testimonial'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
       </section>
 
       {/* CTA Banner */}
