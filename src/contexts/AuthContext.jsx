@@ -104,6 +104,7 @@ export function AuthProvider({ children }) {
       
       const { data: profileData } = await api.get('users/me/')
       setUser(profileData)
+      localStorage.setItem('user', JSON.stringify(profileData))
     } catch (error) {
       console.error('Google Sign In Error:', error)
       throw error
