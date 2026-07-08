@@ -44,11 +44,12 @@ export function AuthProvider({ children }) {
     return userRes.data
   }
 
-  const signUp = async (email, password, fullName, phone) => {
+  const signUp = async (email, password, firstName, lastName, phone) => {
     const { data } = await api.post('users/register/', {
       email,
       password,
-      full_name: fullName,
+      first_name: firstName,
+      last_name: lastName,
       phone
     })
     
@@ -68,7 +69,8 @@ export function AuthProvider({ children }) {
     const userId = user.id
     // map the nested structure
     const payload = {}
-    if (data.full_name !== undefined) payload.first_name = data.full_name
+    if (data.first_name !== undefined) payload.first_name = data.first_name
+    if (data.last_name !== undefined) payload.last_name = data.last_name
     
     if (data.phone !== undefined || data.saved_addresses !== undefined) {
       payload.profile = {}
@@ -122,7 +124,7 @@ export function AuthProvider({ children }) {
     updateProfile,
     uploadAvatar,
     isAdmin: user?.profile?.role === 'admin' || user?.is_superuser,
-    displayName: user?.first_name || user?.email?.split('@')[0],
+    displayName: user?.first_name ? `${user.first_name} ${user.last_name || ''}`.trim() : user?.email?.split('@')[0],
     avatarUrl: user?.profile?.avatar_url
   }
 

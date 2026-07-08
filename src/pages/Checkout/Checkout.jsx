@@ -35,13 +35,10 @@ export default function Checkout() {
   // Pre-fill from profile or user
   useEffect(() => {
     if (profile || user) {
-      const fullName = (profile && profile.full_name) || (user && user.displayName) || ''
-      const names = fullName.split(' ')
-      
       setAddress(prev => ({
         ...prev,
-        firstName: prev.firstName || names[0] || '',
-        lastName: prev.lastName || names.slice(1).join(' ') || '',
+        firstName: prev.firstName || user?.first_name || '',
+        lastName: prev.lastName || user?.last_name || '',
         phone: (profile && profile.phone) || prev.phone || '',
       }))
 

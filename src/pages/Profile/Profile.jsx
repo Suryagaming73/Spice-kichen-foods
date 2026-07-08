@@ -12,7 +12,8 @@ export default function Profile() {
 
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState({
-    full_name: profile?.full_name || displayName || '',
+    first_name: user?.first_name || '',
+    last_name: user?.last_name || '',
     phone: profile?.phone || '',
   })
   const [saving, setSaving] = useState(false)
@@ -37,7 +38,8 @@ export default function Profile() {
     setSaving(true)
     try {
       await updateProfile({
-        full_name: form.full_name,
+        first_name: form.first_name,
+        last_name: form.last_name,
         phone: form.phone,
       })
       setEditing(false)
@@ -161,11 +163,20 @@ export default function Profile() {
 
             <div className="info-grid">
               <div className="info-field">
-                <label><User size={14} /> Full Name</label>
+                <label><User size={14} /> First Name</label>
                 {editing ? (
-                  <input name="full_name" value={form.full_name} onChange={handleChange} />
+                  <input name="first_name" value={form.first_name} onChange={handleChange} />
                 ) : (
-                  <p>{profile?.full_name || displayName || '—'}</p>
+                  <p>{user?.first_name || '—'}</p>
+                )}
+              </div>
+
+              <div className="info-field">
+                <label><User size={14} /> Last Name</label>
+                {editing ? (
+                  <input name="last_name" value={form.last_name} onChange={handleChange} />
+                ) : (
+                  <p>{user?.last_name || '—'}</p>
                 )}
               </div>
 

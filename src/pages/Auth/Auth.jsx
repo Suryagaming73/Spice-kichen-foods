@@ -10,7 +10,8 @@ export default function Auth() {
   const [isAdminLogin, setIsAdminLogin] = useState(false)
   const [isLogin, setIsLogin] = useState(true)
   const [form, setForm] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     password: '',
@@ -76,8 +77,8 @@ export default function Auth() {
         justAuthed.current = true
         toast.success('Welcome back!')
       } else {
-        if (!form.fullName) {
-          toast.error('Please provide your full name')
+        if (!form.firstName) {
+          toast.error('Please provide your first name')
           setLoading(false)
           return
         }
@@ -92,7 +93,7 @@ export default function Auth() {
           return
         }
 
-        await signUp(form.email, form.password, form.fullName, form.phone)
+        await signUp(form.email, form.password, form.firstName, form.lastName, form.phone)
         justAuthed.current = true
         toast.success('Account created!')
       }
@@ -185,16 +186,28 @@ export default function Auth() {
           {/* Sign Up Fields */}
           {!isLogin && !isAdminLogin && (
             <>
-              <div className="input-group">
-                <User size={18} className="input-icon" />
-                <input
-                  type="text"
-                  name="fullName"
-                  placeholder="Full Name *"
-                  value={form.fullName}
-                  onChange={handleChange}
-                  required
-                />
+              <div className="name-inputs" style={{ display: 'flex', gap: '10px' }}>
+                <div className="input-group" style={{ flex: 1 }}>
+                  <User size={18} className="input-icon" />
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="First Name *"
+                    value={form.firstName}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="input-group" style={{ flex: 1 }}>
+                  <User size={18} className="input-icon" />
+                  <input
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={form.lastName}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
               <div className="input-group">
                 <Phone size={18} className="input-icon" />
