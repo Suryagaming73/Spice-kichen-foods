@@ -78,6 +78,40 @@ export default function Home() {
     }
   }
 
+  const renderReviewCard = (review, idx) => (
+    <div key={`${review.id}-${idx}`} className="review-card">
+      <div className="review-header">
+        <div className="reviewer-info">
+          <div className="reviewer-avatar">
+            {review.user_name ? review.user_name[0].toUpperCase() : 'U'}
+          </div>
+          <div>
+            <h4>{review.user_name || 'Anonymous User'}</h4>
+            <span className="review-date">
+              {new Date(review.created_at).toLocaleDateString()}
+            </span>
+          </div>
+        </div>
+        <div className="review-stars">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star 
+              key={i} 
+              size={16} 
+              fill={i < review.rating ? "var(--color-primary)" : "none"} 
+              color={i < review.rating ? "var(--color-primary)" : "#4a5568"} 
+            />
+          ))}
+        </div>
+      </div>
+      {review.food_item && (
+        <div className="review-food-item">
+          Ordered: <span>Item #{review.food_item}</span>
+        </div>
+      )}
+      <p className="review-comment">{review.comment}</p>
+    </div>
+  )
+
   return (
     <div className="home">
       {/* Hero Section */}
@@ -241,42 +275,14 @@ export default function Home() {
               <MessageSquare size={32} />
               <p>No testimonials yet. Be the first to share your experience!</p>
             </div>
+          ) : reviews.length <= 3 ? (
+            <div className="reviews-grid-small" style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+              {reviews.map((review, idx) => renderReviewCard(review, idx))}
+            </div>
           ) : (
             <div className="reviews-marquee-wrapper">
               <div className="reviews-marquee">
-                {[...reviews, ...reviews, ...reviews].map((review, idx) => (
-                  <div key={`${review.id}-${idx}`} className="review-card">
-                    <div className="review-header">
-                      <div className="reviewer-info">
-                        <div className="reviewer-avatar">
-                          {review.user_name ? review.user_name[0].toUpperCase() : 'U'}
-                        </div>
-                        <div>
-                          <h4>{review.user_name || 'Anonymous User'}</h4>
-                          <span className="review-date">
-                            {new Date(review.created_at).toLocaleDateString()}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="review-stars">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star 
-                            key={i} 
-                            size={16} 
-                            fill={i < review.rating ? "var(--color-primary)" : "none"} 
-                            color={i < review.rating ? "var(--color-primary)" : "#4a5568"} 
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    {review.food_item && (
-                      <div className="review-food-item">
-                        Ordered: <span>Item #{review.food_item}</span>
-                      </div>
-                    )}
-                    <p className="review-comment">{review.comment}</p>
-                  </div>
-                ))}
+                {[...reviews, ...reviews, ...reviews].map((review, idx) => renderReviewCard(review, idx))}
               </div>
             </div>
           )}
