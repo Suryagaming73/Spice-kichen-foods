@@ -78,6 +78,12 @@ export default function Header() {
           <Link to="/menu" className={`nav-link ${location.pathname === '/menu' ? 'active' : ''}`}>
             Menu
           </Link>
+          <Link to="/about" className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}>
+            About Us
+          </Link>
+          <Link to="/contact" className={`nav-link ${location.pathname === '/contact' ? 'active' : ''}`}>
+            Contact
+          </Link>
           {user && (
             <Link to="/my-orders" className={`nav-link ${location.pathname === '/my-orders' ? 'active' : ''}`}>
               My Orders
