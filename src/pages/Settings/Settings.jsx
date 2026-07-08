@@ -15,11 +15,11 @@ export default function Settings() {
 
   async function fetchSettings() {
     try {
-      const { data } = await api.get('hotel-settings/')
+      const { data } = await api.get('settings/')
       if (data && data.length > 0) {
         setSettings(data[0])
       } else {
-        const { data: newData } = await api.post('hotel-settings/', {})
+        const { data: newData } = await api.post('settings/', {})
         setSettings(newData)
       }
     } catch (error) {
@@ -52,7 +52,7 @@ export default function Settings() {
       if (payload.free_delivery_above === '') payload.free_delivery_above = 0
       if (payload.gst_percentage === '') payload.gst_percentage = 0
 
-      await api.patch(`hotel-settings/${settings.id}/`, payload)
+      await api.patch(`settings/${settings.id}/`, payload)
       toast.success('Settings saved!')
     } catch (error) {
       toast.error('Failed to save settings')
