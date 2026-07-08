@@ -14,6 +14,7 @@ import Home from './pages/Home/Home'
 import Menu from './pages/Menu/Menu'
 import Cart from './pages/Cart/Cart'
 import Checkout from './pages/Checkout/Checkout'
+import OnlinePayment from './pages/Checkout/OnlinePayment'
 import MyOrders from './pages/MyOrders/MyOrders'
 import Profile from './pages/Profile/Profile'
 import Auth from './pages/Auth/Auth'
@@ -133,6 +134,11 @@ function App() {
               <Route path="/checkout" element={
                 <ProtectedRoute>
                   <Checkout />
+                </ProtectedRoute>
+              } />
+              <Route path="/online-payment" element={
+                <ProtectedRoute>
+                  <OnlinePayment />
                 </ProtectedRoute>
               } />
               <Route path="/my-orders" element={

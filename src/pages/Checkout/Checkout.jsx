@@ -293,7 +293,7 @@ export default function Checkout() {
                 </div>
               </label>
               <label className={`payment-option ${paymentMethod === 'Online' ? 'active' : ''}`}>
-                <input type="radio" name="payment" value="Online" checked={paymentMethod === 'Online'} onChange={() => setPaymentMethod('Online')} />
+                <input type="radio" name="payment" value="Online" checked={paymentMethod === 'Online'} onChange={() => navigate('/online-payment')} />
                 <CreditCard size={20} />
                 <div>
                   <span className="payment-name">Online Payment</span>
