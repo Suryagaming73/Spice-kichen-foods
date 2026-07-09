@@ -5,6 +5,69 @@
   gap: 24px;
 }
 
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.analytics-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.time-range-select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+.time-range-select option {
+  background: #1a1a25;
+  color: #fff;
+}
+
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #fff;
+}
+
+.btn-export:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-export.excel {
+  background: #16a34a; /* Green for excel */
+}
+.btn-export.excel:hover:not(:disabled) {
+  background: #15803d;
+}
+
+.btn-export.pdf {
+  background: #dc2626; /* Red for PDF */
+}
+.btn-export.pdf:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
 .analytics-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

@@ -1,13 +1,20 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts'
-import { TrendingUp, Users, ShoppingBag, IndianRupee } from 'lucide-react'
+import { TrendingUp, Users, ShoppingBag, IndianRupee, Download } from 'lucide-react'
 import api from '../../lib/api'
+import * as XLSX from 'xlsx'
+import { jsPDF } from 'jspdf'
+import html2canvas from 'html2canvas'
+import toast from 'react-hot-toast'
 import './Analytics.css'
 
 export default function Analytics() {
   const [orders, setOrders] = useState([])
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
+  const [timeRange, setTimeRange] = useState('7days')
+  
+  const dashboardRef = useRef(null)
 
   useEffect(() => {
     fetchData()
@@ -24,39 +31,169 @@ export default function Analytics() {
       setUsers(usersRes.data || [])
     } catch (error) {
       console.error('Error fetching analytics data:', error)
+      toast.error('Failed to load analytics data')
     } finally {
       setLoading(false)
     }
   }
 
-  // Process data for charts
-  const last7Days = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date()
-    d.setDate(d.getDate() - (6 - i))
-    return d.toISOString().split('T')[0]
-  })
+  // Generate dynamic years starting from 2026
+  const currentYear = new Date().getFullYear()
+  const availableYears = []
+  for (let y = 2026; y <= Math.max(2026, currentYear); y++) {
+    availableYears.push(y.toString())
+  }
 
-  const revenueData = last7Days.map(date => {
-    const dayOrders = orders.filter(o => o.created_at.startsWith(date) && o.status !== 'Cancelled')
-    return {
-      date: new Date(date).toLocaleDateString('en-IN', { weekday: 'short' }),
-      revenue: dayOrders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0),
-      orders: dayOrders.length
+  // Process data for charts based on timeRange
+  let revenueData = []
+  let filteredOrders = []
+
+  if (timeRange === '7days') {
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date()
+      d.setDate(d.getDate() - (6 - i))
+      return d.toISOString().split('T')[0]
+    })
+
+    revenueData = last7Days.map(date => {
+      const dayOrders = orders.filter(o => o.created_at.startsWith(date) && o.status !== 'Cancelled')
+      return {
+        date: new Date(date).toLocaleDateString('en-IN', { weekday: 'short' }),
+        revenue: dayOrders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0),
+        orders: dayOrders.length
+      }
+    })
+    
+    // Filter orders for the summary cards
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setHours(0,0,0,0)
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+    filteredOrders = orders.filter(o => new Date(o.created_at) >= sevenDaysAgo)
+    
+  } else {
+    // 365days or Specific Year
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    let targetMonths = []
+    
+    if (timeRange === '365days') {
+      const today = new Date()
+      for (let i = 11; i >= 0; i--) {
+        const d = new Date(today.getFullYear(), today.getMonth() - i, 1)
+        targetMonths.push({ month: d.getMonth(), year: d.getFullYear(), label: `${monthNames[d.getMonth()]} ${d.getFullYear().toString().substring(2)}` })
+      }
+      
+      const oneYearAgo = new Date()
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+      filteredOrders = orders.filter(o => new Date(o.created_at) >= oneYearAgo)
+    } else {
+      // Specific Year
+      const targetYear = parseInt(timeRange)
+      for (let i = 0; i < 12; i++) {
+        targetMonths.push({ month: i, year: targetYear, label: monthNames[i] })
+      }
+      filteredOrders = orders.filter(o => new Date(o.created_at).getFullYear() === targetYear)
     }
-  })
+    
+    revenueData = targetMonths.map(tm => {
+      const monthOrders = filteredOrders.filter(o => {
+        const od = new Date(o.created_at)
+        return od.getMonth() === tm.month && od.getFullYear() === tm.year && o.status !== 'Cancelled'
+      })
+      return {
+        date: tm.label,
+        revenue: monthOrders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0),
+        orders: monthOrders.length
+      }
+    })
+  }
 
   const orderStatusData = [
-    { name: 'Delivered', count: orders.filter(o => o.status === 'Delivered').length },
-    { name: 'Processing', count: orders.filter(o => ['Food Processing', 'Preparing'].includes(o.status)).length },
-    { name: 'Out for delivery', count: orders.filter(o => o.status === 'Out for delivery').length },
-    { name: 'Cancelled', count: orders.filter(o => o.status === 'Cancelled').length },
+    { name: 'Delivered', count: filteredOrders.filter(o => o.status === 'Delivered').length },
+    { name: 'Processing', count: filteredOrders.filter(o => ['Food Processing', 'Preparing'].includes(o.status)).length },
+    { name: 'Out for delivery', count: filteredOrders.filter(o => o.status === 'Out for delivery').length },
+    { name: 'Cancelled', count: filteredOrders.filter(o => o.status === 'Cancelled').length },
   ]
 
-  const totalRevenue = orders.filter(o => o.status !== 'Cancelled').reduce((sum, o) => sum + Number(o.total_amount || 0), 0)
+  const totalRevenue = filteredOrders.filter(o => o.status !== 'Cancelled').reduce((sum, o) => sum + Number(o.total_amount || 0), 0)
+
+  // Export functions
+  const downloadExcel = () => {
+    if (filteredOrders.length === 0) {
+      toast.error('No data to export for selected range')
+      return
+    }
+    const data = filteredOrders.map(o => ({
+      'Order ID': o.id,
+      'Date': new Date(o.created_at).toLocaleString(),
+      'Status': o.status,
+      'Total Amount': o.total_amount,
+      'Payment Status': o.payment_status ? 'Paid' : 'Pending',
+      'Payment Method': o.payment_method || 'COD',
+      'Items Count': o.items?.length || 0,
+      'Customer First Name': o.address?.firstName || '',
+      'Customer Last Name': o.address?.lastName || '',
+      'Customer Phone': o.address?.phone || ''
+    }))
+    
+    const worksheet = XLSX.utils.json_to_sheet(data)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, "AnalyticsData")
+    XLSX.writeFile(workbook, `SpiceKitchen_Analytics_${timeRange}.xlsx`)
+  }
+
+  const downloadPDF = async () => {
+    const element = dashboardRef.current
+    if (!element) return
+    
+    // Temporarily hide export buttons during screenshot
+    const controls = element.querySelector('.analytics-controls')
+    if (controls) controls.style.display = 'none'
+
+    try {
+      const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: '#0f0f13' })
+      const imgData = canvas.toDataURL('image/png')
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth()
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width
+      
+      // If height is larger than page, scale it down or add pages. For a simple dashboard, single page is fine if it fits.
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+      pdf.save(`SpiceKitchen_Analytics_${timeRange}.pdf`)
+    } catch (err) {
+      console.error(err)
+      toast.error('Failed to generate PDF')
+    } finally {
+      if (controls) controls.style.display = 'flex'
+    }
+  }
 
   return (
-    <div className="analytics-page">
-      <h2 className="page-title">Analytics Overview</h2>
+    <div className="analytics-page" ref={dashboardRef}>
+      <div className="analytics-header">
+        <h2 className="page-title">Analytics Overview</h2>
+        
+        <div className="analytics-controls">
+          <select 
+            value={timeRange} 
+            onChange={(e) => setTimeRange(e.target.value)}
+            className="time-range-select"
+          >
+            <option value="7days">Last 7 Days</option>
+            <option value="365days">Last 365 Days</option>
+            {availableYears.map(year => (
+              <option key={year} value={year}>Year {year}</option>
+            ))}
+          </select>
+
+          <button className="btn-export excel" onClick={downloadExcel} disabled={loading}>
+            <Download size={16} /> Excel
+          </button>
+          <button className="btn-export pdf" onClick={downloadPDF} disabled={loading}>
+            <Download size={16} /> PDF
+          </button>
+        </div>
+      </div>
 
       {/* Summary Cards */}
       <div className="analytics-summary">
@@ -65,7 +202,7 @@ export default function Analytics() {
             <IndianRupee size={24} />
           </div>
           <div className="sc-info">
-            <p className="sc-label">Total Revenue</p>
+            <p className="sc-label">Revenue ({timeRange})</p>
             <p className="sc-value">₹{totalRevenue.toFixed(0)}</p>
           </div>
         </div>
@@ -74,8 +211,8 @@ export default function Analytics() {
             <ShoppingBag size={24} />
           </div>
           <div className="sc-info">
-            <p className="sc-label">Total Orders</p>
-            <p className="sc-value">{orders.length}</p>
+            <p className="sc-label">Orders ({timeRange})</p>
+            <p className="sc-value">{filteredOrders.length}</p>
           </div>
         </div>
         <div className="summary-card">
@@ -93,7 +230,7 @@ export default function Analytics() {
           </div>
           <div className="sc-info">
             <p className="sc-label">Avg. Order Value</p>
-            <p className="sc-value">₹{orders.length ? (totalRevenue / orders.length).toFixed(0) : 0}</p>
+            <p className="sc-value">₹{filteredOrders.length ? (totalRevenue / filteredOrders.length).toFixed(0) : 0}</p>
           </div>
         </div>
       </div>
@@ -101,7 +238,7 @@ export default function Analytics() {
       <div className="charts-grid">
         {/* Revenue Chart */}
         <div className="chart-container">
-          <h3>Revenue & Orders (Last 7 Days)</h3>
+          <h3>Revenue & Orders ({timeRange === '7days' ? 'Last 7 Days' : timeRange === '365days' ? 'Last 365 Days' : `Year ${timeRange}`})</h3>
           <div className="chart-wrapper">
             {loading ? <p className="chart-loading">Loading chart...</p> : (
               <ResponsiveContainer width="100%" height="100%">
