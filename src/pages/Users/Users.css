@@ -18,7 +18,7 @@
 
 .users-table .table-head {
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr;
   padding: 16px 24px;
   background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -34,7 +34,7 @@
 
 .users-table .table-row {
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr;
   padding: 16px 24px;
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
@@ -107,6 +107,125 @@
 .user-spent-col {
   font-weight: 600;
   color: #22c55e;
+}
+
+.view-user-btn {
+  background: rgba(255, 107, 53, 0.1);
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  color: #FF6B35;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-user-btn:hover {
+  background: #FF6B35;
+  color: #fff;
+}
+
+/* User Modal */
+.user-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.user-modal {
+  background: #1a1a24;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  animation: modalFadeIn 0.3s ease;
+}
+
+.user-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.user-modal-header h3 {
+  color: #fff;
+  font-size: 20px;
+  margin: 0;
+}
+
+.user-modal-header .close-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.user-modal-header .close-btn:hover { color: #fff; }
+
+.user-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.um-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.um-detail span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.um-detail p {
+  margin: 0;
+  font-size: 15px;
+  color: #fff;
+}
+
+.um-addresses {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.um-addresses h4 {
+  color: #fff;
+  margin: 0 0 12px 0;
+  font-size: 14px;
+}
+
+.um-addr-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.um-addr-item span { flex: 1; line-height: 1.4; }
+
+.no-addr {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0;
 }
 
 @media (max-width: 900px) {

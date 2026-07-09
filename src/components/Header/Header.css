@@ -142,15 +142,9 @@
   align-items: center;
 }
 
-.location-modal-form .input-icon {
-  position: absolute;
-  left: 14px;
-  color: rgba(255, 255, 255, 0.4);
-}
-
 .location-modal-form input {
   width: 100%;
-  padding: 12px 14px 12px 42px;
+  padding: 12px 14px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -159,6 +153,27 @@
   font-family: inherit;
   outline: none;
 }
+
+.location-modal-form .input-icon {
+  position: absolute;
+  left: 14px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.location-modal-form.full-form input {
+  padding: 12px 14px;
+}
+
+.loc-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.loc-row input:last-child {
+  grid-column: span 2;
+}
+
 .location-modal-form input:focus { border-color: #FF6B35; }
 
 .save-location-btn {
@@ -481,5 +496,12 @@
   
   .header-actions {
     gap: 4px;
+  }
+  
+  .loc-row {
+    grid-template-columns: 1fr;
+  }
+  .loc-row input:last-child {
+    grid-column: 1;
   }
 }

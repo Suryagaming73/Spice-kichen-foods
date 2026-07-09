@@ -14,10 +14,33 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('')
   const [locationModalOpen, setLocationModalOpen] = useState(false)
   const [savedLocation, setSavedLocation] = useState(localStorage.getItem('spice_kitchen_location') || '')
-  const [tempLocation, setTempLocation] = useState(savedLocation)
+  const [locationForm, setLocationForm] = useState({
+    street: '', area: '', city: '', state: '', pincode: ''
+  })
   const navigate = useNavigate()
   const location = useLocation()
   const profileRef = useRef(null)
+
+  // Initialize location from profile if available
+  useEffect(() => {
+    if (profile?.saved_addresses?.length > 0) {
+      const addr = profile.saved_addresses[0]
+      setLocationForm({
+        street: addr.street || '',
+        area: addr.area || '',
+        city: addr.city || '',
+        state: addr.state || '',
+        pincode: addr.pincode || ''
+      })
+      const formatted = [addr.street, addr.city].filter(Boolean).join(', ')
+      if (formatted) setSavedLocation(formatted)
+    } else {
+      const local = localStorage.getItem('spice_kitchen_location')
+      if (local && !locationForm.street) {
+        setLocationForm(prev => ({ ...prev, street: local }))
+      }
+    }
+  }, [profile])
 
   // Close profile dropdown on click outside
   useEffect(() => {
@@ -48,25 +71,30 @@ export default function Header() {
 
   async function handleSaveLocation(e) {
     e.preventDefault()
-    const loc = tempLocation.trim()
-    if (loc) {
-      setSavedLocation(loc)
-      localStorage.setItem('spice_kitchen_location', loc)
-      setLocationModalOpen(false)
-      toast.success('Location updated')
+    if (!locationForm.street || !locationForm.city) {
+      toast.error('Street and City are required')
+      return
+    }
 
-      // Sync to profile if logged in
-      if (user) {
-        try {
-          const currentAddresses = profile?.saved_addresses || []
-          const exists = currentAddresses.some(a => a.street === loc)
-          if (!exists) {
-            const newAddress = { street: loc, area: '', city: '', state: '', pincode: '' }
-            await updateProfile({ saved_addresses: [newAddress, ...currentAddresses] })
-          }
-        } catch (error) {
-          console.error('Failed to sync location to profile', error)
+    const formatted = [locationForm.street, locationForm.city].filter(Boolean).join(', ')
+    setSavedLocation(formatted)
+    localStorage.setItem('spice_kitchen_location', formatted)
+    setLocationModalOpen(false)
+    toast.success('Location updated')
+
+    // Sync to profile if logged in
+    if (user) {
+      try {
+        const currentAddresses = profile?.saved_addresses || []
+        let newAddresses = [...currentAddresses]
+        if (newAddresses.length > 0) {
+          newAddresses[0] = locationForm // Update existing first address
+        } else {
+          newAddresses = [locationForm]
         }
+        await updateProfile({ saved_addresses: newAddresses })
+      } catch (error) {
+        console.error('Failed to sync location to profile', error)
       }
     }
   }
@@ -105,15 +133,38 @@ export default function Header() {
                 <h3>Delivery Location</h3>
                 <button className="close-btn" onClick={() => setLocationModalOpen(false)}><X size={20} /></button>
               </div>
-              <form onSubmit={handleSaveLocation} className="location-modal-form">
-                <div className="input-group">
-                  <MapPin size={18} className="input-icon" />
+              <form onSubmit={handleSaveLocation} className="location-modal-form full-form">
+                <input
+                  type="text"
+                  placeholder="Street / House No. *"
+                  value={locationForm.street}
+                  onChange={(e) => setLocationForm({ ...locationForm, street: e.target.value })}
+                  autoFocus
+                />
+                <input
+                  type="text"
+                  placeholder="Area / Locality"
+                  value={locationForm.area}
+                  onChange={(e) => setLocationForm({ ...locationForm, area: e.target.value })}
+                />
+                <div className="loc-row">
                   <input
                     type="text"
-                    placeholder="Enter your delivery area..."
-                    value={tempLocation}
-                    onChange={(e) => setTempLocation(e.target.value)}
-                    autoFocus
+                    placeholder="City *"
+                    value={locationForm.city}
+                    onChange={(e) => setLocationForm({ ...locationForm, city: e.target.value })}
+                  />
+                  <input
+                    type="text"
+                    placeholder="State"
+                    value={locationForm.state}
+                    onChange={(e) => setLocationForm({ ...locationForm, state: e.target.value })}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Pincode"
+                    value={locationForm.pincode}
+                    onChange={(e) => setLocationForm({ ...locationForm, pincode: e.target.value })}
                   />
                 </div>
                 <button type="submit" className="save-location-btn">Confirm Location</button>

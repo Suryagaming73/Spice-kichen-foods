@@ -23,6 +23,7 @@ export default function Profile() {
 
   // New address form
   const [showAddAddress, setShowAddAddress] = useState(false)
+  const [editingAddress, setEditingAddress] = useState(false)
   const [newAddress, setNewAddress] = useState({
     street: '', area: '', city: '', state: '', pincode: '',
   })
@@ -80,27 +81,22 @@ export default function Profile() {
     }
 
     try {
-      const addresses = profile?.saved_addresses || []
       await updateProfile({
-        saved_addresses: [...addresses, newAddress],
+        saved_addresses: [newAddress], // Limit to one address
       })
-      setNewAddress({ street: '', area: '', city: '', state: '', pincode: '' })
       setShowAddAddress(false)
+      setEditingAddress(false)
       toast.success('Address saved!')
     } catch (error) {
       toast.error('Failed to save address')
     }
   }
 
-  async function handleDeleteAddress(index) {
-    try {
-      const addresses = [...(profile?.saved_addresses || [])]
-      addresses.splice(index, 1)
-      await updateProfile({ saved_addresses: addresses })
-      toast.success('Address removed')
-    } catch (error) {
-      toast.error('Failed to remove address')
+  function handleEditAddress() {
+    if (savedAddresses.length > 0) {
+      setNewAddress(savedAddresses[0])
     }
+    setEditingAddress(true)
   }
 
   async function handleSignOut() {
@@ -203,13 +199,20 @@ export default function Profile() {
         {/* Saved Addresses */}
         <div className="addresses-card">
           <div className="addresses-header">
-            <h3><MapPin size={18} /> Saved Addresses</h3>
-            <button className="add-address-btn" onClick={() => setShowAddAddress(!showAddAddress)}>
-              <Plus size={16} /> Add Address
-            </button>
+            <h3><MapPin size={18} /> Delivery Address</h3>
+            {savedAddresses.length === 0 && !showAddAddress && (
+              <button className="add-address-btn" onClick={() => setShowAddAddress(true)}>
+                <Plus size={16} /> Add Address
+              </button>
+            )}
+            {savedAddresses.length > 0 && !editingAddress && (
+              <button className="add-address-btn" onClick={handleEditAddress}>
+                Update Address
+              </button>
+            )}
           </div>
 
-          {showAddAddress && (
+          {(showAddAddress || editingAddress) && (
             <div className="new-address-form">
               <input placeholder="Street / House No. *" value={newAddress.street} onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })} />
               <input placeholder="Area / Locality" value={newAddress.area} onChange={(e) => setNewAddress({ ...newAddress, area: e.target.value })} />
@@ -220,31 +223,30 @@ export default function Profile() {
               </div>
               <div className="addr-actions">
                 <button className="save-addr-btn" onClick={handleAddAddress}>Save Address</button>
-                <button className="cancel-addr-btn" onClick={() => setShowAddAddress(false)}>Cancel</button>
+                <button className="cancel-addr-btn" onClick={() => {
+                  setShowAddAddress(false)
+                  setEditingAddress(false)
+                  setNewAddress({ street: '', area: '', city: '', state: '', pincode: '' })
+                }}>Cancel</button>
               </div>
             </div>
           )}
 
-          {savedAddresses.length > 0 ? (
+          {savedAddresses.length > 0 && !editingAddress ? (
             <div className="saved-addresses-list">
-              {savedAddresses.map((addr, idx) => (
-                <div key={idx} className="saved-address-item">
-                  <div className="addr-info">
-                    <MapPin size={16} />
-                    <p>
-                      {[addr.street, addr.area, addr.city, addr.state, addr.pincode]
-                        .filter(Boolean)
-                        .join(', ')}
-                    </p>
-                  </div>
-                  <button className="delete-addr-btn" onClick={() => handleDeleteAddress(idx)}>
-                    <Trash2 size={14} />
-                  </button>
+              <div className="saved-address-item">
+                <div className="addr-info">
+                  <MapPin size={16} />
+                  <p>
+                    {[savedAddresses[0].street, savedAddresses[0].area, savedAddresses[0].city, savedAddresses[0].state, savedAddresses[0].pincode]
+                      .filter(Boolean)
+                      .join(', ')}
+                  </p>
                 </div>
-              ))}
+              </div>
             </div>
           ) : (
-            !showAddAddress && (
+            savedAddresses.length === 0 && !showAddAddress && (
               <p className="no-addresses">No saved addresses yet. Add one for faster checkout!</p>
             )
           )}

@@ -120,7 +120,6 @@ export default function Checkout() {
 
       // Save address to profile
       if (profile) {
-        const savedAddresses = profile.saved_addresses || []
         const newAddr = {
           street: address.street,
           area: address.area,
@@ -129,13 +128,9 @@ export default function Checkout() {
           pincode: address.pincode,
         }
 
-        // Don't duplicate
-        const exists = savedAddresses.some(a => a.street === newAddr.street && a.city === newAddr.city)
-        if (!exists) {
-          await api.patch(`users/${user.id}/`, {
-            profile: { saved_addresses: [...savedAddresses, newAddr] }
-          })
-        }
+        await api.patch(`users/${user.id}/`, {
+          profile: { saved_addresses: [newAddr] }
+        })
       }
 
       setOrderId(data.id)
