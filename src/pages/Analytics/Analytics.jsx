@@ -3,8 +3,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { TrendingUp, Users, ShoppingBag, IndianRupee, Download } from 'lucide-react'
 import api from '../../lib/api'
 import * as XLSX from 'xlsx'
-import { jsPDF } from 'jspdf'
-import html2canvas from 'html2canvas'
 import toast from 'react-hot-toast'
 import './Analytics.css'
 
@@ -141,33 +139,6 @@ export default function Analytics() {
     XLSX.writeFile(workbook, `SpiceKitchen_Analytics_${timeRange}.xlsx`)
   }
 
-  const downloadPDF = async () => {
-    const element = dashboardRef.current
-    if (!element) return
-    
-    // Temporarily hide export buttons during screenshot
-    const controls = element.querySelector('.analytics-controls')
-    if (controls) controls.style.display = 'none'
-
-    try {
-      const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: '#0f0f13' })
-      const imgData = canvas.toDataURL('image/png')
-      const pdf = new jsPDF('p', 'mm', 'a4')
-      
-      const pdfWidth = pdf.internal.pageSize.getWidth()
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width
-      
-      // If height is larger than page, scale it down or add pages. For a simple dashboard, single page is fine if it fits.
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
-      pdf.save(`SpiceKitchen_Analytics_${timeRange}.pdf`)
-    } catch (err) {
-      console.error(err)
-      toast.error('Failed to generate PDF')
-    } finally {
-      if (controls) controls.style.display = 'flex'
-    }
-  }
-
   return (
     <div className="analytics-page" ref={dashboardRef}>
       <div className="analytics-header">
@@ -188,9 +159,6 @@ export default function Analytics() {
 
           <button className="btn-export excel" onClick={downloadExcel} disabled={loading}>
             <Download size={16} /> Excel
-          </button>
-          <button className="btn-export pdf" onClick={downloadPDF} disabled={loading}>
-            <Download size={16} /> PDF
           </button>
         </div>
       </div>
