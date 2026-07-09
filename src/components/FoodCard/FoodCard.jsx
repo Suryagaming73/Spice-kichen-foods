@@ -1,10 +1,29 @@
 import { Plus, Minus, Star, Leaf } from 'lucide-react'
 import { useCart } from '../../contexts/CartContext'
+import { useSettings } from '../../contexts/SettingsContext'
+import toast from 'react-hot-toast'
 import './FoodCard.css'
 
 export default function FoodCard({ item }) {
   const { addToCart, getItemQuantity, incrementQuantity, decrementQuantity } = useCart()
+  const { settings } = useSettings()
   const quantity = getItemQuantity(item.id)
+
+  const handleAddToCart = () => {
+    if (settings && !settings.is_open) {
+      toast.error('The hotel is closed. Cannot add items.')
+      return
+    }
+    addToCart(item)
+  }
+
+  const handleIncrement = (id) => {
+    if (settings && !settings.is_open) {
+      toast.error('The hotel is closed. Cannot add items.')
+      return
+    }
+    incrementQuantity(id)
+  }
 
   return (
     <div className="food-card">
@@ -43,7 +62,7 @@ export default function FoodCard({ item }) {
           {quantity === 0 ? (
             <button
               className="add-to-cart-btn"
-              onClick={() => addToCart(item)}
+              onClick={handleAddToCart}
             >
               <Plus size={16} />
               ADD
@@ -54,7 +73,7 @@ export default function FoodCard({ item }) {
                 <Minus size={14} />
               </button>
               <span className="qty-count">{quantity}</span>
-              <button onClick={() => incrementQuantity(item.id)} className="qty-btn plus">
+              <button onClick={() => handleIncrement(item.id)} className="qty-btn plus">
                 <Plus size={14} />
               </button>
             </div>

@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { ChefHat, MapPin, Phone, Mail, Clock, Globe, Heart, MessageCircle } from 'lucide-react'
+import { useSettings } from '../../contexts/SettingsContext'
 import './Footer.css'
 
 export default function Footer() {
+  const { settings } = useSettings()
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -12,13 +14,12 @@ export default function Footer() {
             <div className="footer-logo">
               <ChefHat size={28} />
               <div>
-                <span className="footer-name">Spice Kitchen</span>
+                <span className="footer-name">{settings?.hotel_name || 'Spice Kitchen'}</span>
                 <span className="footer-tagline">Authentic Indian Cuisine</span>
               </div>
             </div>
             <p className="footer-desc">
-              Fresh ingredients, traditional recipes, and flavors that remind you of home. 
-              Order now and get it delivered hot to your doorstep!
+              {settings?.description || 'Fresh ingredients, traditional recipes, and flavors that remind you of home. Order now and get it delivered hot to your doorstep!'}
             </p>
             <div className="social-links">
               <Link to="/about" className="social-link" aria-label="Website"><Globe size={18} /></Link>
@@ -40,25 +41,29 @@ export default function Footer() {
             <h4>Contact Us</h4>
             <div className="contact-item">
               <MapPin size={16} />
-              <span>123 MG Road, Bangalore, Karnataka 560001</span>
+              <span>{settings?.address || '123 MG Road, Bangalore, Karnataka 560001'}</span>
             </div>
             <div className="contact-item">
               <Phone size={16} />
-              <span>+91 98765 43210</span>
+              <span>{settings?.phone || '+91 98765 43210'}</span>
             </div>
             <div className="contact-item">
               <Mail size={16} />
-              <span>contact@spicekitchen.com</span>
+              <span>{settings?.email || 'contact@spicekitchen.com'}</span>
             </div>
             <div className="contact-item">
               <Clock size={16} />
-              <span>9:00 AM – 11:00 PM (All days)</span>
+              <span>
+                {settings?.opening_time && settings?.closing_time 
+                  ? `${settings.opening_time} – ${settings.closing_time} (All days)` 
+                  : '9:00 AM – 11:00 PM (All days)'}
+              </span>
             </div>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} Spice Kitchen. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {settings?.hotel_name || 'Spice Kitchen'}. All rights reserved.</p>
           <div className="legal-links">
             <Link to="/privacy">Privacy Policy</Link>
             <Link to="/terms">Terms of Service</Link>

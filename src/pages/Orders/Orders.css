@@ -159,8 +159,25 @@
 .status-dropdown.status-cancelled { border-color: rgba(239, 68, 68, 0.3); color: #ef4444; }
 
 @media (max-width: 768px) {
-  .order-item { flex-direction: column; }
-  .order-icon-wrap { align-self: flex-start; }
-  .order-status-select { align-self: stretch; }
+  .order-item { 
+    flex-direction: column; 
+    gap: 12px;
+    padding: 16px;
+  }
+  .order-icon-wrap { 
+    display: none; 
+  }
+  .order-status-select { 
+    align-self: stretch; 
+    margin-top: 8px;
+  }
   .status-dropdown { width: 100%; }
+  .order-meta {
+    gap: 12px;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  .order-meta > div {
+    flex: 1 1 45%;
+  }
 }

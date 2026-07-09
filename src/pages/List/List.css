@@ -159,12 +159,29 @@
 @media (max-width: 900px) {
   .list-table-header,
   .list-table-row {
-    grid-template-columns: 56px 1fr 80px 80px 60px;
+    grid-template-columns: 50px 1fr 60px 80px 70px;
+    gap: 8px;
+    padding: 10px;
   }
   .list-table-header b:nth-child(3),
   .list-table-row .category-badge,
   .list-table-header b:nth-child(5),
   .list-table-row .type-badge {
     display: none;
+  }
+  .item-name { font-size: 13px; }
+  .price { font-size: 13px; }
+  .availability-btn { padding: 4px; font-size: 11px; }
+  .list-img-wrap { width: 50px; height: 50px; }
+}
+
+@media (max-width: 500px) {
+  .list-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .list-table-header,
+  .list-table-row {
+    min-width: 380px;
   }
 }

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Outlet, Navigate, useLocation }
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { CartProvider } from './contexts/CartContext'
+import { SettingsProvider } from './contexts/SettingsContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import Header from './components/Header/Header'
 import Footer from './components/Footer/Footer'
@@ -116,7 +117,8 @@ function App() {
       <ScrollToTop />
       <AuthProvider>
         <CartProvider>
-          <Toaster
+          <SettingsProvider>
+            <Toaster
             position="top-center"
             toastOptions={{
               duration: 3000,
@@ -186,6 +188,7 @@ function App() {
               <Route path="/admin/offers" element={<Offers />} />
             </Route>
           </Routes>
+          </SettingsProvider>
         </CartProvider>
       </AuthProvider>
     </Router>

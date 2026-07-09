@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { MapPin, Navigation, Loader, CreditCard, Banknote, ArrowLeft, CheckCircle } from 'lucide-react'
+import { MapPin, Loader, CreditCard, Banknote, ArrowLeft, CheckCircle } from 'lucide-react'
 import { useCart } from '../../contexts/CartContext'
 import { useAuth } from '../../contexts/AuthContext'
 import api from '../../lib/api'
-import { getLocationAddress, formatAddress } from '../../lib/location'
 import toast from 'react-hot-toast'
 import './Checkout.css'
 
@@ -22,10 +21,7 @@ export default function Checkout() {
     city: '',
     state: '',
     pincode: '',
-    lat: null,
-    lng: null,
   })
-  const [fetchingLocation, setFetchingLocation] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState('COD')
   const [notes, setNotes] = useState('')
   const [placing, setPlacing] = useState(false)
@@ -52,8 +48,6 @@ export default function Checkout() {
           city: saved.city || '',
           state: saved.state || '',
           pincode: saved.pincode || '',
-          lat: saved.lat || null,
-          lng: saved.lng || null,
         }))
       }
     }
@@ -66,28 +60,6 @@ export default function Checkout() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  async function fetchGPSLocation() {
-    setFetchingLocation(true)
-    try {
-      const locationData = await getLocationAddress()
-      setAddress(prev => ({
-        ...prev,
-        street: locationData.street || prev.street,
-        area: locationData.area || prev.area,
-        city: locationData.city || prev.city,
-        state: locationData.state || prev.state,
-        pincode: locationData.pincode || prev.pincode,
-        lat: locationData.lat,
-        lng: locationData.lng,
-      }))
-      toast.success('Location detected successfully!')
-    } catch (error) {
-      toast.error(error.message || 'Could not detect location')
-    } finally {
-      setFetchingLocation(false)
-    }
-  }
 
   function handleChange(e) {
     setAddress({ ...address, [e.target.name]: e.target.value })
@@ -130,10 +102,8 @@ export default function Checkout() {
           state: address.state,
           pincode: address.pincode,
         },
-        delivery_lat: address.lat,
-        delivery_lng: address.lng,
         payment_method: paymentMethod,
-        payment_status: paymentMethod === 'COD' ? false : false,
+        payment_status: false,
         notes: notes || null,
         status: 'Food Processing',
       }
@@ -149,8 +119,6 @@ export default function Checkout() {
           city: address.city,
           state: address.state,
           pincode: address.pincode,
-          lat: address.lat,
-          lng: address.lng,
         }
 
         // Don't duplicate
@@ -212,18 +180,6 @@ export default function Checkout() {
           <div className="form-section">
             <div className="section-title-row">
               <h2><MapPin size={20} /> Delivery Address</h2>
-              <button
-                type="button"
-                className="detect-location-btn"
-                onClick={fetchGPSLocation}
-                disabled={fetchingLocation}
-              >
-                {fetchingLocation ? (
-                  <><Loader size={16} className="spin" /> Detecting...</>
-                ) : (
-                  <><Navigation size={16} /> Use My Location</>
-                )}
-              </button>
             </div>
 
             <div className="form-grid">
@@ -260,12 +216,6 @@ export default function Checkout() {
                 <input name="pincode" value={address.pincode} onChange={handleChange} placeholder="560001" id="checkout-pincode" />
               </div>
             </div>
-
-            {address.lat && (
-              <p className="location-detected">
-                <CheckCircle size={14} /> GPS location captured (lat: {address.lat.toFixed(4)}, lng: {address.lng.toFixed(4)})
-              </p>
-            )}
           </div>
 
           {/* Delivery Notes */}

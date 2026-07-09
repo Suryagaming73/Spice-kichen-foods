@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react'
 import { Store, Clock, Truck, MapPin, Save, Loader } from 'lucide-react'
 import api from '../../lib/api'
 import toast from 'react-hot-toast'
+import { useSettings } from '../../contexts/SettingsContext'
 import './Settings.css'
 
 export default function Settings() {
+  const { fetchSettings: fetchGlobalSettings } = useSettings()
   const [settings, setSettings] = useState(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -54,6 +56,7 @@ export default function Settings() {
 
       await api.patch(`settings/${settings.id}/`, payload)
       toast.success('Settings saved!')
+      fetchGlobalSettings()
     } catch (error) {
       toast.error('Failed to save settings')
     } finally {
