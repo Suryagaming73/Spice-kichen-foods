@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate, useLocation } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
@@ -52,13 +52,26 @@ function CustomerLayout() {
 
 // Layout for admin pages (Navbar + Sidebar)
 function AdminLayout() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location]);
+
   return (
     <ProtectedRoute adminOnly>
       <div className="admin-layout">
-        <Navbar />
+        <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
         <hr className="admin-hr" />
         <div className="admin-content">
-          <Sidebar />
+          {isSidebarOpen && (
+            <div 
+              className="sidebar-overlay"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+          <Sidebar isOpen={isSidebarOpen} />
           <div className="admin-page">
             <Outlet />
           </div>

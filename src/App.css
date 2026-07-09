@@ -29,12 +29,38 @@ body {
 
 .admin-content {
   display: flex;
+  position: relative;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 65px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 90;
+    backdrop-filter: blur(2px);
+  }
 }
 
 .admin-page {
   flex: 1;
   padding: 28px 32px;
   min-height: calc(100vh - 70px);
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .admin-page {
+    padding: 16px;
+  }
 }
 
 /* Loading screen */

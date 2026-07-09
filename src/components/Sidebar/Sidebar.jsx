@@ -5,7 +5,7 @@ import { useCart } from '../../contexts/CartContext'
 import { useNavigate } from 'react-router-dom'
 import './Sidebar.css'
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen }) => {
   const { signOut } = useAuth()
   const { clearCart } = useCart()
   const navigate = useNavigate()
@@ -17,7 +17,7 @@ const Sidebar = () => {
   }
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-options">
         <NavLink to="/admin/dashboard" className="sidebar-option">
           <div className="option-icon"><LayoutDashboard size={20} /></div>

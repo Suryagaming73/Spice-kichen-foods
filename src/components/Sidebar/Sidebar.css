@@ -88,18 +88,24 @@
 
 @media (max-width: 768px) {
   .sidebar {
-    width: 60px;
+    position: fixed;
+    top: 65px; /* Adjust based on navbar height, which is 62px + 1px border */
+    left: -240px; /* Hide by default */
+    width: 240px;
+    height: calc(100vh - 65px);
+    background-color: #0a0a10;
+    z-index: 100;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
   }
-  .sidebar-option p,
-  .sidebar-logout span {
-    display: none;
+  
+  .sidebar.open {
+    left: 0;
   }
+
   .sidebar-option {
-    justify-content: center;
-    padding: 12px;
     margin-right: 0;
-  }
-  .sidebar-logout {
-    justify-content: center;
+    border-radius: 0;
   }
 }

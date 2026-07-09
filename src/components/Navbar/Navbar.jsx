@@ -1,14 +1,17 @@
 import { Link } from 'react-router-dom'
-import { ChefHat, ArrowLeft } from 'lucide-react'
+import { ChefHat, ArrowLeft, Menu } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import './Navbar.css'
 
-const Navbar = () => {
+const Navbar = ({ onMenuClick }) => {
   const { displayName, avatarUrl } = useAuth()
 
   return (
     <div className="navbar">
       <div className="navbar-left">
+        <button className="mobile-menu-btn" onClick={onMenuClick}>
+          <Menu size={24} />
+        </button>
         <Link to="/" className="back-to-site" title="Back to website">
           <ArrowLeft size={18} />
         </Link>
