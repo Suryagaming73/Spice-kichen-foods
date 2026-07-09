@@ -35,10 +35,10 @@ export default function Analytics() {
     }
   }
 
-  // Generate dynamic years starting from 2026
+  // Generate dynamic years starting from 2026 up to 4 years into the future
   const currentYear = new Date().getFullYear()
   const availableYears = []
-  for (let y = 2026; y <= Math.max(2026, currentYear); y++) {
+  for (let y = 2026; y <= Math.max(2030, currentYear + 4); y++) {
     availableYears.push(y.toString())
   }
 
