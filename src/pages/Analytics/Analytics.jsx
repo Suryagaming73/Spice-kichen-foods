@@ -35,12 +35,7 @@ export default function Analytics() {
     }
   }
 
-  // Generate dynamic years starting from 2026 up to 4 years into the future
   const currentYear = new Date().getFullYear()
-  const availableYears = []
-  for (let y = 2026; y <= Math.max(2030, currentYear + 4); y++) {
-    availableYears.push(y.toString())
-  }
 
   // Process data for charts based on timeRange
   let revenueData = []
@@ -152,9 +147,7 @@ export default function Analytics() {
           >
             <option value="7days">Last 7 Days</option>
             <option value="365days">Last 365 Days</option>
-            {availableYears.map(year => (
-              <option key={year} value={year}>Year {year}</option>
-            ))}
+            <option value={currentYear.toString()}>Year {currentYear}</option>
           </select>
 
           <button className="btn-export excel" onClick={downloadExcel} disabled={loading}>
