@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { PlusCircle, List, Package, LayoutDashboard, Settings, LogOut, LayoutGrid, Tag, Gift } from 'lucide-react'
+import { PlusCircle, List, Package, LayoutDashboard, Settings, LogOut, LayoutGrid, Tag, Gift, LineChart, Users } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { useCart } from '../../contexts/CartContext'
 import { useNavigate } from 'react-router-dom'
@@ -24,6 +24,11 @@ const Sidebar = ({ isOpen }) => {
           <p>Dashboard</p>
         </NavLink>
 
+        <NavLink to="/admin/analytics" className="sidebar-option">
+          <div className="option-icon"><LineChart size={20} /></div>
+          <p>Analytics</p>
+        </NavLink>
+
         <NavLink to="/admin/add" className="sidebar-option">
           <div className="option-icon"><PlusCircle size={20} /></div>
           <p>Add Items</p>
@@ -42,6 +47,11 @@ const Sidebar = ({ isOpen }) => {
         <NavLink to="/admin/orders" className="sidebar-option">
           <div className="option-icon"><Package size={20} /></div>
           <p>Orders</p>
+        </NavLink>
+
+        <NavLink to="/admin/users" className="sidebar-option">
+          <div className="option-icon"><Users size={20} /></div>
+          <p>Users</p>
         </NavLink>
 
         <NavLink to="/admin/offers" className="sidebar-option">

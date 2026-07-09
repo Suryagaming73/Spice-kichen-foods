@@ -1,0 +1,120 @@
+.users-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.users-list-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.users-table {
+  width: 100%;
+}
+
+.users-table .table-head {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.users-table .table-head span {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.users-table .table-row {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+  padding: 16px 24px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.2s;
+}
+
+.users-table .table-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.users-table .table-row:last-child {
+  border-bottom: none;
+}
+
+.user-name-col {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B35, #FF8C42);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.user-name-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name-info strong {
+  color: #fff;
+  font-size: 14px;
+}
+
+.user-role {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.user-contact-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-contact-col span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.user-orders-col,
+.user-spent-col,
+.user-date-col {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.user-spent-col {
+  font-weight: 600;
+  color: #22c55e;
+}
+
+@media (max-width: 900px) {
+  .users-table {
+    overflow-x: auto;
+  }
+  .users-table .table-head,
+  .users-table .table-row {
+    min-width: 700px;
+  }
+}

@@ -102,6 +102,13 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+.hero-search-wrapper {
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto 36px;
+  z-index: 10;
+}
+
 /* Hero search */
 .hero-search {
   display: flex;
@@ -111,8 +118,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 6px 6px 6px 20px;
-  max-width: 520px;
-  margin: 0 auto 36px;
+  width: 100%;
   transition: all 0.3s ease;
   color: rgba(255, 255, 255, 0.3);
   animation: fadeInDown 0.6s ease 0.3s both;
@@ -155,6 +161,100 @@
 .hero-search button:hover {
   transform: scale(1.02);
   box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+}
+
+/* Search Overlay */
+.search-overlay {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: rgba(26, 26, 35, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  max-height: 320px;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  animation: dropdownSlide 0.2s ease;
+  text-align: left;
+}
+
+.search-overlay-list {
+  list-style: none;
+  padding: 8px;
+  margin: 0;
+}
+
+.search-overlay-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.search-overlay-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.search-overlay-img-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.search-overlay-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.search-overlay-img-placeholder {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 107, 53, 0.1);
+  color: #FF6B35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-overlay-info {
+  flex: 1;
+}
+
+.search-overlay-info h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 4px 0;
+}
+
+.search-overlay-info .price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #FF6B35;
+}
+
+.search-overlay-add-btn {
+  padding: 6px 14px;
+  background: rgba(255, 107, 53, 0.1);
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  border-radius: 8px;
+  color: #FF6B35;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-overlay-add-btn:hover {
+  background: #FF6B35;
+  color: #fff;
 }
 
 /* Hero stats */
@@ -444,9 +544,13 @@
 
 @media (max-width: 480px) {
   .food-grid { grid-template-columns: 1fr; }
-  .features-grid { grid-template-columns: 1fr; }
-  .hero h1 { font-size: 26px; }
-  .hero { min-height: 420px; }
+  .features-grid { grid-template-columns: 1fr; gap: 12px; }
+  .hero h1 { font-size: 24px; }
+  .hero-desc { font-size: 14px; }
+  .hero { min-height: 400px; }
+  .review-card { width: 260px; margin: 0 10px; }
+  .cta-banner { padding: 30px 16px; margin-top: 40px; }
+  .cta-content h2 { font-size: 20px; }
 }
 
 /* Testimonials Section */
@@ -493,7 +597,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 350px;
+  width: 300px;
   flex-shrink: 0;
   margin: 0 15px;
 }

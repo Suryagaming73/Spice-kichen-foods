@@ -35,6 +35,8 @@ import Categories from './pages/Categories/Categories'
 import Orders from './pages/Orders/Orders'
 import Settings from './pages/Settings/Settings'
 import Offers from './pages/Offers/Offers'
+import Analytics from './pages/Analytics/Analytics'
+import Users from './pages/Users/Users'
 
 import './App.css'
 
@@ -186,6 +188,8 @@ function App() {
               <Route path="/admin/orders" element={<Orders />} />
               <Route path="/admin/settings" element={<Settings />} />
               <Route path="/admin/offers" element={<Offers />} />
+              <Route path="/admin/analytics" element={<Analytics />} />
+              <Route path="/admin/users" element={<Users />} />
             </Route>
           </Routes>
           </SettingsProvider>

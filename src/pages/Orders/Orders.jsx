@@ -76,7 +76,7 @@ const Orders = () => {
                 </div>
                 <div className="order-details">
                   <div className="order-header">
-                    <h3>Order #{order.id}</h3>
+                    <h3>Order #{order.id} {order.address?.firstName && `- ${order.address.firstName} ${order.address.lastName || ''}`}</h3>
                     <span className="order-date">
                       {new Date(order.created_at).toLocaleDateString('en-IN', {
                         day: 'numeric', month: 'short', year: 'numeric',

@@ -294,3 +294,10 @@
   .form-grid { grid-template-columns: 1fr; }
   .form-field.full { grid-column: 1; }
 }
+
+@media (max-width: 480px) {
+  .checkout-page { padding: 20px 16px; }
+  .checkout-page > h1 { font-size: 24px; }
+  .form-section { padding: 16px; }
+  .checkout-summary { padding: 16px; }
+}

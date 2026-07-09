@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Search, ArrowRight, Star, Clock, Truck, ShieldCheck, ChefHat, MessageSquare } from 'lucide-react'
 import api from '../../lib/api'
 import { useAuth } from '../../contexts/AuthContext'
+import { useCart } from '../../contexts/CartContext'
 import toast from 'react-hot-toast'
 import FoodCard from '../../components/FoodCard/FoodCard'
 import './Home.css'
@@ -12,12 +13,15 @@ export default function Home() {
   const [popularItems, setPopularItems] = useState([])
   const [reviews, setReviews] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
+  const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [loading, setLoading] = useState(true)
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' })
   const [submittingReview, setSubmittingReview] = useState(false)
+  const [allFoodItems, setAllFoodItems] = useState([])
   const navigate = useNavigate()
   
   const { user } = useAuth()
+  const { addToCart } = useCart()
 
   useEffect(() => {
     fetchData()
@@ -33,6 +37,7 @@ export default function Home() {
 
       setCategories(catRes.data || [])
       const availableItems = foodRes.data?.filter(item => item.is_available) || []
+      setAllFoodItems(availableItems)
       setPopularItems(availableItems.slice(0, 8))
       setReviews(reviewRes.data || [])
     } catch (error) {
@@ -112,6 +117,10 @@ export default function Home() {
     </div>
   )
 
+  const searchResults = searchQuery.trim() 
+    ? allFoodItems.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    : []
+
   return (
     <div className="home">
       {/* Hero Section */}
@@ -139,17 +148,56 @@ export default function Home() {
             with fresh ingredients and traditional recipes.
           </p>
 
-          <form className="hero-search" onSubmit={handleSearch}>
-            <Search size={20} />
-            <input
-              type="text"
-              placeholder="Search for biryani, dosa, paneer..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              id="hero-search-input"
-            />
-            <button type="submit">Search</button>
-          </form>
+          <div className="hero-search-wrapper">
+            <form className="hero-search" onSubmit={handleSearch}>
+              <Search size={20} />
+              <input
+                type="text"
+                placeholder="Search for biryani, dosa, paneer..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                id="hero-search-input"
+              />
+              <button type="submit">Search</button>
+            </form>
+
+            {isSearchFocused && searchQuery.trim() && searchResults.length > 0 && (
+              <div className="search-overlay">
+                <ul className="search-overlay-list">
+                  {searchResults.map(item => (
+                    <li key={item.id} className="search-overlay-item">
+                      <div className="search-overlay-img-wrap">
+                        {item.image_url ? (
+                          <img src={item.image_url} alt={item.name} className="search-overlay-img" />
+                        ) : (
+                          <div className="search-overlay-img-placeholder">
+                            <ChefHat size={16} />
+                          </div>
+                        )}
+                      </div>
+                      <div className="search-overlay-info">
+                        <h4>{item.name}</h4>
+                        <span className="price">₹{item.price}</span>
+                      </div>
+                      <button 
+                        className="search-overlay-add-btn" 
+                        onClick={(e) => {
+                          e.preventDefault()
+                          addToCart(item)
+                          toast.success(`Added ${item.name} to cart`)
+                          setSearchQuery('')
+                        }}
+                      >
+                        Add
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
 
           <div className="hero-stats">
             <div className="stat">

@@ -49,6 +49,14 @@ export default function Checkout() {
           state: saved.state || '',
           pincode: saved.pincode || '',
         }))
+      } else {
+        const localLocation = localStorage.getItem('spice_kitchen_location')
+        if (localLocation) {
+          setAddress(prev => ({
+            ...prev,
+            street: localLocation,
+          }))
+        }
       }
     }
   }, [profile, user])

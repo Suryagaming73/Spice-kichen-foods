@@ -3,14 +3,18 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { ShoppingCart, User, LogOut, MapPin, Search, Menu, X, ChefHat, LayoutDashboard, Package } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { useCart } from '../../contexts/CartContext'
+import toast from 'react-hot-toast'
 import './Header.css'
 
 export default function Header() {
-  const { user, displayName, avatarUrl, signOut, isAdmin } = useAuth()
+  const { user, profile, updateProfile, displayName, avatarUrl, signOut, isAdmin } = useAuth()
   const { totalItems, clearCart } = useCart()
   const [menuOpen, setMenuOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [locationModalOpen, setLocationModalOpen] = useState(false)
+  const [savedLocation, setSavedLocation] = useState(localStorage.getItem('spice_kitchen_location') || '')
+  const [tempLocation, setTempLocation] = useState(savedLocation)
   const navigate = useNavigate()
   const location = useLocation()
   const profileRef = useRef(null)
@@ -42,6 +46,31 @@ export default function Header() {
     }
   }
 
+  async function handleSaveLocation(e) {
+    e.preventDefault()
+    const loc = tempLocation.trim()
+    if (loc) {
+      setSavedLocation(loc)
+      localStorage.setItem('spice_kitchen_location', loc)
+      setLocationModalOpen(false)
+      toast.success('Location updated')
+
+      // Sync to profile if logged in
+      if (user) {
+        try {
+          const currentAddresses = profile?.saved_addresses || []
+          const exists = currentAddresses.some(a => a.street === loc)
+          if (!exists) {
+            const newAddress = { street: loc, area: '', city: '', state: '', pincode: '' }
+            await updateProfile({ saved_addresses: [newAddress, ...currentAddresses] })
+          }
+        } catch (error) {
+          console.error('Failed to sync location to profile', error)
+        }
+      }
+    }
+  }
+
   async function handleSignOut() {
     await signOut()
     clearCart()
@@ -60,16 +89,38 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* Search Bar (desktop) */}
-        <form className="header-search" onSubmit={handleSearch}>
-          <Search size={18} />
-          <input
-            type="text"
-            placeholder="Search for food..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </form>
+        {/* Location Button (desktop) */}
+        <button className="header-location-btn" onClick={() => setLocationModalOpen(true)}>
+          <MapPin size={18} />
+          <span className="location-text">
+            {savedLocation ? (savedLocation.length > 20 ? savedLocation.substring(0, 20) + '...' : savedLocation) : 'Add Location'}
+          </span>
+        </button>
+
+        {/* Location Modal */}
+        {locationModalOpen && (
+          <div className="location-modal-overlay" onClick={() => setLocationModalOpen(false)}>
+            <div className="location-modal" onClick={e => e.stopPropagation()}>
+              <div className="location-modal-header">
+                <h3>Delivery Location</h3>
+                <button className="close-btn" onClick={() => setLocationModalOpen(false)}><X size={20} /></button>
+              </div>
+              <form onSubmit={handleSaveLocation} className="location-modal-form">
+                <div className="input-group">
+                  <MapPin size={18} className="input-icon" />
+                  <input
+                    type="text"
+                    placeholder="Enter your delivery area..."
+                    value={tempLocation}
+                    onChange={(e) => setTempLocation(e.target.value)}
+                    autoFocus
+                  />
+                </div>
+                <button type="submit" className="save-location-btn">Confirm Location</button>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Nav Links */}
         <nav className={`header-nav ${menuOpen ? 'open' : ''}`}>

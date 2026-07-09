@@ -226,3 +226,17 @@
   .order-card-header { flex-direction: column; align-items: flex-start; }
   .order-right { width: 100%; justify-content: space-between; margin-top: 10px; }
 }
+
+@media (max-width: 480px) {
+  .my-orders-page { padding: 20px 16px; }
+  .my-orders-page > h1 { font-size: 24px; }
+  .status-progress { padding: 10px 0; }
+  .step-label { display: none; }
+  .progress-step.active .step-label,
+  .progress-step.current .step-label {
+    display: block;
+    position: absolute;
+    top: 24px;
+    width: max-content;
+  }
+}
