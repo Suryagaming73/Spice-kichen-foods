@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import './MyOrders.css'
 
 const STATUS_CONFIG = {
-  'Food Processing': { icon: Clock, color: '#FFB800', label: 'Preparing' },
+  'Food Processing': { icon: Clock, color: '#FFB800', label: 'Food Processing' },
   'Preparing': { icon: Clock, color: '#FFB800', label: 'Preparing' },
   'Out for delivery': { icon: Truck, color: '#3b82f6', label: 'On the way' },
   'Delivered': { icon: CheckCircle, color: '#22c55e', label: 'Delivered' },
