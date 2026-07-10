@@ -94,6 +94,7 @@
 .table-head {
   display: grid;
   grid-template-columns: 140px 1fr 100px 160px 100px;
+  min-width: 700px;
   gap: 12px;
   padding: 10px 14px;
   font-size: 12px;
@@ -107,6 +108,7 @@
 .table-row {
   display: grid;
   grid-template-columns: 140px 1fr 100px 160px 100px;
+  min-width: 700px;
   gap: 12px;
   padding: 14px;
   font-size: 13px;
@@ -155,10 +157,12 @@
 
 .date-cell { font-size: 12px; color: rgba(255, 255, 255, 0.35); }
 
+@media (max-width: 1024px) {
+  .stats-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
 @media (max-width: 768px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .table-head, .table-row { grid-template-columns: 100px 1fr 80px 120px; }
-  .date-cell { display: none; }
 }
 
 @media (max-width: 480px) {

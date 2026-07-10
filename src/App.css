@@ -36,7 +36,7 @@ body {
   display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .sidebar-overlay {
     display: block;
     position: fixed;
@@ -57,9 +57,21 @@ body {
   width: 100%;
 }
 
+@media (max-width: 1024px) {
+  .admin-page {
+    padding: 20px 24px;
+  }
+}
+
 @media (max-width: 768px) {
   .admin-page {
     padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-page {
+    padding: 12px;
   }
 }
 

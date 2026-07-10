@@ -229,6 +229,9 @@
 }
 
 @media (max-width: 900px) {
+  .users-list-card {
+    overflow-x: auto;
+  }
   .users-table {
     overflow-x: auto;
   }

@@ -182,6 +182,6 @@
   }
   .list-table-header,
   .list-table-row {
-    min-width: 380px;
+    min-width: 500px;
   }
 }

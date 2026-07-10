@@ -114,21 +114,23 @@ export default function MyOrders() {
                 {isExpanded && (
                   <div className="order-details">
                     {/* Status Progress */}
-                    <div className="status-progress">
-                      {['Food Processing', 'Out for delivery', 'Delivered'].map((step, i) => {
-                        const steps = ['Food Processing', 'Out for delivery', 'Delivered']
-                        const currentIdx = steps.indexOf(order.status)
-                        const isActive = i <= currentIdx
-                        const isCurrent = i === currentIdx
+                    {order.status !== 'Cancelled' && (
+                      <div className="status-progress">
+                        {['Food Processing', 'Preparing', 'Out for delivery', 'Delivered'].map((step, i) => {
+                          const steps = ['Food Processing', 'Preparing', 'Out for delivery', 'Delivered']
+                          const currentIdx = steps.indexOf(order.status)
+                          const isActive = i <= currentIdx
+                          const isCurrent = i === currentIdx
 
-                        return (
-                          <div key={step} className={`progress-step ${isActive ? 'active' : ''} ${isCurrent ? 'current' : ''}`}>
-                            <div className="step-dot" />
-                            <span className="step-label">{step}</span>
-                          </div>
-                        )
-                      })}
-                    </div>
+                          return (
+                            <div key={step} className={`progress-step ${isActive ? 'active' : ''} ${isCurrent ? 'current' : ''}`}>
+                              <div className="step-dot" />
+                              <span className="step-label">{step}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
 
                     {/* Items */}
                     <div className="order-items-list">

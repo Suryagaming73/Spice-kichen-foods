@@ -86,7 +86,7 @@
   background: rgba(239, 68, 68, 0.12);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .sidebar {
     position: fixed;
     top: 65px; /* Adjust based on navbar height, which is 62px + 1px border */

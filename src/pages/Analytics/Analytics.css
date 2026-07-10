@@ -149,4 +149,21 @@
   .charts-grid {
     grid-template-columns: 1fr;
   }
+  .chart-container {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .analytics-controls {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .btn-export {
+    flex: 1;
+    justify-content: center;
+  }
+  .time-range-select {
+    width: 100%;
+  }
 }
