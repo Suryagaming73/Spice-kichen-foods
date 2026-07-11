@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Search, ArrowRight, Star, Clock, Truck, ShieldCheck, ChefHat, MessageSquare } from 'lucide-react'
 import api from '../../lib/api'
@@ -22,6 +22,21 @@ export default function Home() {
   
   const { user } = useAuth()
   const { addToCart } = useCart()
+  const searchWrapperRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchWrapperRef.current && !searchWrapperRef.current.contains(event.target)) {
+        setIsSearchFocused(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('touchstart', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+    }
+  }, [])
 
   useEffect(() => {
     fetchData()
@@ -118,7 +133,7 @@ export default function Home() {
   )
 
   const searchResults = searchQuery.trim() 
-    ? allFoodItems.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? allFoodItems.filter(item => item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
     : []
 
   return (
@@ -148,7 +163,7 @@ export default function Home() {
             with fresh ingredients and traditional recipes.
           </p>
 
-          <div className="hero-search-wrapper">
+          <div className="hero-search-wrapper" ref={searchWrapperRef}>
             <form className="hero-search" onSubmit={handleSearch}>
               <Search size={20} />
               <input
@@ -157,7 +172,6 @@ export default function Home() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                 id="hero-search-input"
               />
               <button type="submit">Search</button>

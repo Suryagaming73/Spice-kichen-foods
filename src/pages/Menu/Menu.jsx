@@ -46,7 +46,7 @@ export default function Menu() {
       }
 
       if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase()
+        const query = searchQuery.trim().toLowerCase()
         filtered = filtered.filter(item => 
           item.name.toLowerCase().includes(query) || 
           (item.description && item.description.toLowerCase().includes(query))
